@@ -1,10 +1,14 @@
-# AI Newsletter
+# AI Signal
 
-Public archive for the AI newsletter.
+Public archive for *AI Signal*, a weekly Friday newsletter that filters AI industry news through a **Signal Spectrum** — Hearsay & Conjecture vs. Reality — instead of political bias.
 
-Issues are produced in the companion build repo and published here for readers.
+- **Build repo (private):** [DCMikes/ai-newsletter-build](https://github.com/DCMikes/ai-newsletter-build) — drafts, prompts, source library, and the editorial process spec
+- **This repo (public):** finished editions, served via GitHub Pages at https://dcmikes.github.io/ai-newsletter-publish/
 
-- **Build repo (private):** [DCMikes/ai-newsletter-build](https://github.com/DCMikes/ai-newsletter-build) — drafts, prompts, scripts, source material
-- **Publish repo (this one, public):** [DCMikes/ai-newsletter-publish](https://github.com/DCMikes/ai-newsletter-publish) — finished issues, served via GitHub Pages
+## Editions
 
-Issues will be listed here once published.
+| # | Date | Markdown | HTML |
+|---|------|----------|------|
+| 010 | May 29, 2026 | [AI-Signal-Edition-010-2026-05-29.md](AI-Signal-Edition-010-2026-05-29.md) | [HTML](https://dcmikes.github.io/ai-newsletter-publish/AI-Signal-Edition-010-2026-05-29.html) |
+
+Edition 010 is published in two formats: the canonical markdown shape used by editions 001–009, plus a long-form HTML rendering of the same content.
