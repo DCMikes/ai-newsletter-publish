@@ -6,24 +6,25 @@
 <title>AI Signal — Edition 010 · May 29, 2026</title>
 <style>
   :root {
-    --ink: #14171f;
-    --ink-soft: #3a4154;
-    --bg: #faf9f5;
-    --bg-card: #ffffff;
-    --rule: #e4e1d6;
-    --accent: #6b4a1f;
-    --signal-pure: #1f7a3a;
-    --signal-grounded: #2563a8;
-    --signal-mixed: #a36b1f;
-    --signal-speculative: #a3461f;
-    --signal-hearsay: #8a2828;
-    --warn-bg: #fff6e0;
-    --warn-rule: #c69022;
-    --note-bg: #eef3fb;
-    --note-rule: #4a7bbf;
-    --conflict-bg: #fbeaea;
-    --conflict-rule: #b13838;
-    --tag-bg: #efece2;
+    /* Dark theme */
+    --ink: #e9e7df;
+    --ink-soft: #a6abba;
+    --bg: #0f1117;
+    --bg-card: #171a22;
+    --rule: #2a2f3b;
+    --accent: #d4a85a;
+    --signal-pure: #1f8f45;
+    --signal-grounded: #2f7fd0;
+    --signal-mixed: #b3801f;
+    --signal-speculative: #c25f33;
+    --signal-hearsay: #c93b3b;
+    --warn-bg: #2a2310;
+    --warn-rule: #d8a23e;
+    --note-bg: #142235;
+    --note-rule: #5a9be0;
+    --conflict-bg: #2c1517;
+    --conflict-rule: #e05a5a;
+    --tag-bg: #232734;
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
@@ -237,8 +238,8 @@
     background: var(--tag-bg);
     display: inline-block;
   }
-  .priority[data-level="HIGH"]   { background: #f4dfdf; color: #8a2828; }
-  .priority[data-level="MEDIUM"] { background: #f4ecdf; color: #a36b1f; }
+  .priority[data-level="HIGH"]   { background: #3a1c1c; color: #f0a0a0; }
+  .priority[data-level="MEDIUM"] { background: #332a14; color: #e6c780; }
   .priority[data-level="LOW"]    { background: var(--tag-bg); color: var(--ink-soft); }
   footer.colophon {
     margin-top: 64px;
@@ -251,10 +252,67 @@
   }
   footer.colophon a { color: var(--accent); }
   em { font-style: italic; }
+
+  /* Prev / current / next edition navigation */
+  .edition-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .edition-nav.top    { margin-bottom: 32px; padding-bottom: 18px; border-bottom: 1px solid var(--rule); }
+  .edition-nav.bottom { margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--rule); }
+  .nav-btn {
+    padding: 7px 14px; border: 1px solid var(--rule); border-radius: 6px;
+    color: var(--accent); text-decoration: none; white-space: nowrap;
+  }
+  a.nav-btn:hover { border-color: var(--accent); color: var(--ink); }
+  .nav-current  { color: var(--ink); border-color: transparent; letter-spacing: 0.1em; }
+  .nav-disabled { opacity: 0.32; }
+
+  /* Wide-screen two-pane layout (mobile-first: single column by default) */
+  .toc { display: none; }
+  .story { scroll-margin-top: 24px; }
+  @media (min-width: 1024px) {
+    .frame { max-width: 1240px; padding: 56px 56px 110px; }
+    h1.title { font-size: 52px; }
+    .editor-note { font-size: 19px; }
+    .layout {
+      display: grid; grid-template-columns: 230px minmax(0, 1fr);
+      column-gap: 60px; align-items: start;
+    }
+    .toc {
+      display: block; position: sticky; top: 40px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .toc-head {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--ink-soft); margin-bottom: 14px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .toc-list { list-style: none; margin: 0 0 18px; padding: 0; counter-reset: toc; }
+    .toc-list li { counter-increment: toc; margin-bottom: 12px; font-size: 13px; line-height: 1.35; }
+    .toc-list li::before { content: counter(toc, decimal-leading-zero); color: var(--accent); margin-right: 8px; }
+    .toc-list a { color: var(--ink-soft); text-decoration: none; }
+    .toc-list a:hover { color: var(--ink); }
+    .toc-watch {
+      display: inline-block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--accent); text-decoration: none; padding-top: 14px; border-top: 1px solid var(--rule);
+    }
+    .body p { max-width: 78ch; }
+  }
+  @media (min-width: 1440px) {
+    .frame { max-width: 1340px; }
+  }
 </style>
 </head>
 <body>
 <div class="frame">
+
+<nav class="edition-nav top" aria-label="Edition navigation">
+  <span class="nav-btn nav-disabled" title="Edition 009 is not yet published to the web">◄ Older</span>
+  <a class="nav-btn nav-current" href="./">Current edition</a>
+  <span class="nav-btn nav-disabled" title="This is the latest edition">Newer ►</span>
+</nav>
 
 <header class="masthead">
   <div class="badge">📡 AI Signal · Edition 010</div>
@@ -262,12 +320,28 @@
   <div class="title-meta"><span class="date">May 29, 2026</span> · The Week in Signal</div>
 </header>
 
+<div class="layout">
+
+<aside class="toc" aria-label="In this edition">
+  <div class="toc-head">In this edition</div>
+  <ol class="toc-list">
+    <li><a href="#story-1">EU AI Act Omnibus</a></li>
+    <li><a href="#story-2">OpenAI S-1 Filing</a></li>
+    <li><a href="#story-3">Anthropic $30B Round</a></li>
+    <li><a href="#story-4">Musk v. OpenAI Tossed</a></li>
+    <li><a href="#story-5">Papal AI Encyclical</a></li>
+  </ol>
+  <a class="toc-watch" href="#watch">Watch List ↓</a>
+</aside>
+
+<main class="content">
+
 <p class="editor-note">
 This week the AI industry's structural foundations shifted faster than its product line. Brussels reached a provisional agreement to soften and delay parts of the EU AI Act, granting up to 16 months of timeline relief on high-risk obligations while adding a new prohibition on AI systems generating non-consensual intimate imagery. OpenAI confidentially filed its S-1 with the SEC on Friday, beginning the largest tech IPO process in years and forcing the question of what frontier AI's actual unit economics look like. Anthropic moved to close a $30&nbsp;billion round at a $900&nbsp;billion-plus valuation that, on paper, will make it the most valuable private AI company in the world — surpassing OpenAI for the first time. A federal jury and Judge Gonzalez Rogers tossed Musk&nbsp;v.&nbsp;OpenAI on statute-of-limitations grounds, removing the single largest legal overhang on the IPO path. And Pope Leo XIV released his first encyclical, <em>Magnifica Humanitas</em>, the Catholic Church's most extensive papal statement on artificial intelligence to date.
 <span class="closer">Five stories. One spectrum. Let's get into it.</span>
 </p>
 
-<article class="story">
+<article class="story" id="story-1">
   <div class="story-num">Story 01</div>
   <h2>EU AI Act Digital Omnibus: Brussels Reaches Provisional Deal on Timeline Relief and a New Deepfake Ban</h2>
   <p class="deck">The Council presidency and the European Parliament reached a first-reading provisional agreement to amend the EU AI Act, postponing high-risk obligations by up to 16 months and introducing a new prohibition targeting AI-generated non-consensual intimate imagery.</p>
@@ -288,7 +362,7 @@ This week the AI industry's structural foundations shifted faster than its produ
   <div class="sources"><strong>Sources:</strong> Council of the EU press release (May 7, 2026), Bird &amp; Bird (May 2026), White &amp; Case (May 2026), Inside Privacy / Covington (May 2026), Dentons (May 27, 2026)</div>
 </article>
 
-<article class="story">
+<article class="story" id="story-2">
   <div class="story-num">Story 02</div>
   <h2>OpenAI Files Its Confidential S-1; September Listing Window Now Live</h2>
   <p class="deck"><span class="followup">🔄 Follow-Up · Ed. 009</span> OpenAI confidentially filed its S-1 with the SEC on May 22, 2026, with Goldman Sachs and Morgan Stanley as lead underwriters and a target listing window between Labor Day and Thanksgiving.</p>
@@ -309,7 +383,7 @@ This week the AI industry's structural foundations shifted faster than its produ
   <div class="sources"><strong>Sources:</strong> Fortune (May 22, 2026), Investing.com (May 22, 2026), Reuters (May 22, 2026), Wall Street Journal (May 19, 2026), CNBC (May 20, 2026)</div>
 </article>
 
-<article class="story">
+<article class="story" id="story-3">
   <div class="story-num">Story 03</div>
   <h2>Anthropic's $30B Round Set to Close at $900B+, Overtaking OpenAI in Private Markets</h2>
   <p class="deck"><span class="followup">🔄 Follow-Up · Ed. 008</span> Bloomberg reports the round is expected to close as soon as the week of May 26, co-led by Sequoia, Dragoneer, Altimeter, and Greenoaks at a pre-money valuation above $900 billion.</p>
@@ -330,7 +404,7 @@ This week the AI industry's structural foundations shifted faster than its produ
   <div class="sources"><strong>Sources:</strong> Bloomberg (May 22, 2026), Yahoo Finance (May 22, 2026), TechTimes (May 23, 2026), GuruFocus (May 2026)</div>
 </article>
 
-<article class="story">
+<article class="story" id="story-4">
   <div class="story-num">Story 04</div>
   <h2>Federal Court Tosses Musk v. OpenAI; Advisory Jury Says Musk Sued Too Late</h2>
   <p class="deck"><span class="followup">🔄 Follow-Up · Ed. 008</span> A nine-member advisory jury in the Northern District of California took less than two hours to find Musk's claims time-barred; Judge Yvonne Gonzalez Rogers agreed and dismissed the case.</p>
@@ -351,7 +425,7 @@ This week the AI industry's structural foundations shifted faster than its produ
   <div class="sources"><strong>Sources:</strong> NPR (May 18, 2026), CNBC (May 18, 2026), CNN Business (May 18, 2026), PBS NewsHour (May 18, 2026), Al Jazeera (May 18, 2026), The Ringer (May 21, 2026)</div>
 </article>
 
-<article class="story">
+<article class="story" id="story-5">
   <div class="story-num">Story 05</div>
   <h2>Pope Leo XIV's <em>Magnifica Humanitas</em>: The Catholic Church's First Papal Encyclical on AI</h2>
   <p class="deck">Pope Leo XIV released his first encyclical, <em>Magnifica Humanitas</em>, on May 25, 2026, framing artificial intelligence as a new industrial revolution and challenging Big Tech's framing of the technology's social effects.</p>
@@ -372,7 +446,7 @@ This week the AI industry's structural foundations shifted faster than its produ
   <div class="sources"><strong>Sources:</strong> Vatican News (May 25, 2026), Vatican.va — <em>Magnifica Humanitas</em> full text (signed May 15, 2026), NPR (May 25, 2026), TIME (May 25, 2026), National Catholic Register (May 25, 2026)</div>
 </article>
 
-<section class="watchlist">
+<section class="watchlist" id="watch">
   <h2>Watch List · Next Edition Pipeline</h2>
   <table class="watch">
     <thead>
@@ -417,6 +491,15 @@ This week the AI industry's structural foundations shifted faster than its produ
     </tbody>
   </table>
 </section>
+
+</main>
+</div>
+
+<nav class="edition-nav bottom" aria-label="Edition navigation">
+  <span class="nav-btn nav-disabled" title="Edition 009 is not yet published to the web">◄ Older</span>
+  <a class="nav-btn nav-current" href="./">Current edition</a>
+  <span class="nav-btn nav-disabled" title="This is the latest edition">Newer ►</span>
+</nav>
 
 <footer class="colophon">
   <div>AI Signal · Edition 010 · May 29, 2026</div>
