@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Signal — Edition 008 · May 15, 2026</title>
+<style>
+  :root {
+    /* Dark theme */
+    --ink: #e9e7df;
+    --ink-soft: #a6abba;
+    --bg: #0f1117;
+    --bg-card: #171a22;
+    --rule: #2a2f3b;
+    --accent: #d4a85a;
+    --signal-pure: #1f8f45;
+    --signal-grounded: #2f7fd0;
+    --signal-mixed: #b3801f;
+    --signal-speculative: #c25f33;
+    --signal-hearsay: #c93b3b;
+    --warn-bg: #2a2310;
+    --warn-rule: #d8a23e;
+    --note-bg: #142235;
+    --note-rule: #5a9be0;
+    --conflict-bg: #2c1517;
+    --conflict-rule: #e05a5a;
+    --tag-bg: #232734;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: Charter, 'Iowan Old Style', 'Source Serif Pro', Georgia, serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .frame { max-width: 760px; margin: 0 auto; padding: 48px 28px 96px; }
+  header.masthead { border-bottom: 2px solid var(--ink); padding-bottom: 24px; margin-bottom: 36px; }
+  .badge {
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  h1.title { font-size: 44px; line-height: 1.1; margin: 0 0 14px; letter-spacing: -0.01em; }
+  .title-meta { font-size: 14px; color: var(--ink-soft); font-style: italic; }
+  .title-meta .date { font-style: normal; font-weight: 600; color: var(--ink); }
+  .editor-note {
+    font-size: 18px; line-height: 1.6; color: var(--ink-soft);
+    border-left: 3px solid var(--accent); padding: 0 0 0 18px; margin: 0 0 56px;
+  }
+  .editor-note .closer {
+    display: block; margin-top: 14px;
+    font-family: 'JetBrains Mono', monospace; font-style: normal;
+    font-size: 13px; letter-spacing: 0.04em; color: var(--ink); text-transform: uppercase;
+  }
+  .story { margin-bottom: 60px; }
+  .story + .story { border-top: 1px solid var(--rule); padding-top: 56px; }
+  .story-num {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .story h2 { font-size: 28px; line-height: 1.2; margin: 0 0 14px; letter-spacing: -0.005em; }
+  .deck { font-size: 17px; line-height: 1.5; color: var(--ink-soft); margin: 0 0 22px; font-style: italic; }
+  .deck .followup {
+    display: inline-block; font-style: normal;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    background: var(--tag-bg); color: var(--accent);
+    padding: 2px 7px; border-radius: 3px; letter-spacing: 0.05em;
+    margin-right: 6px; vertical-align: 1px;
+  }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 22px; font-size: 13px; }
+  .signal {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', monospace; font-weight: 600;
+    padding: 4px 10px; border-radius: 3px; color: #fff;
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .signal[data-tier="pure"]        { background: var(--signal-pure); }
+  .signal[data-tier="grounded"]    { background: var(--signal-grounded); }
+  .signal[data-tier="mixed"]       { background: var(--signal-mixed); }
+  .signal[data-tier="speculative"] { background: var(--signal-speculative); }
+  .signal[data-tier="hearsay"]     { background: var(--signal-hearsay); }
+  .signal[data-tier="noise"]       { background: #39414f; color: #c7ccd8; }
+  .bars { font-family: 'JetBrains Mono', monospace; letter-spacing: -1px; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--tag-bg); color: var(--ink);
+    padding: 4px 10px; border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.03em;
+  }
+  .body p { margin: 0 0 18px; font-size: 17px; }
+  .callout {
+    border-left: 4px solid var(--note-rule); background: var(--note-bg);
+    padding: 14px 18px; margin: 22px 0; font-size: 15px; line-height: 1.5;
+  }
+  .callout[data-type="warning"]  { border-left-color: var(--warn-rule); background: var(--warn-bg); }
+  .callout[data-type="conflict"] { border-left-color: var(--conflict-rule); background: var(--conflict-bg); }
+  .callout-label {
+    display: block; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+    font-weight: 700; margin-bottom: 6px;
+  }
+  .callout[data-type="note"]     .callout-label { color: var(--note-rule); }
+  .callout[data-type="warning"]  .callout-label { color: var(--warn-rule); }
+  .callout[data-type="conflict"] .callout-label { color: var(--conflict-rule); }
+  .sources {
+    font-size: 13px; color: var(--ink-soft);
+    border-top: 1px dashed var(--rule); padding-top: 14px; margin-top: 18px;
+  }
+  .sources strong { color: var(--ink); font-weight: 600; }
+  section.watchlist { border-top: 2px solid var(--ink); padding-top: 36px; margin-top: 80px; }
+  section.watchlist h2 { font-size: 22px; margin: 0 0 18px; letter-spacing: -0.005em; }
+  table.watch { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.watch th, table.watch td {
+    text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--rule); vertical-align: top;
+  }
+  table.watch th {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-soft); border-bottom: 1px solid var(--ink);
+  }
+  .status { font-family: 'JetBrains Mono', monospace; font-size: 12px; white-space: nowrap; }
+  .priority {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    padding: 2px 8px; border-radius: 3px; background: var(--tag-bg); display: inline-block;
+  }
+  .priority[data-level="HIGH"]   { background: #3a1c1c; color: #f0a0a0; }
+  .priority[data-level="MEDIUM"] { background: #332a14; color: #e6c780; }
+  .priority[data-level="LOW"]    { background: var(--tag-bg); color: var(--ink-soft); }
+  footer.colophon {
+    margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--ink-soft); line-height: 1.7;
+  }
+  footer.colophon a { color: var(--accent); }
+  em { font-style: italic; }
+
+  /* Prev / current / next edition navigation */
+  .edition-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .edition-nav.top    { margin-bottom: 32px; padding-bottom: 18px; border-bottom: 1px solid var(--rule); }
+  .edition-nav.bottom { margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--rule); }
+  .nav-btn {
+    padding: 7px 14px; border: 1px solid var(--rule); border-radius: 6px;
+    color: var(--accent); text-decoration: none; white-space: nowrap;
+  }
+  a.nav-btn:hover { border-color: var(--accent); color: var(--ink); }
+  .nav-current  { color: var(--ink); border-color: transparent; letter-spacing: 0.1em; }
+  .nav-disabled { opacity: 0.32; }
+
+  /* Wide-screen two-pane layout (mobile-first: single column by default) */
+  .toc { display: none; }
+  .story { scroll-margin-top: 24px; }
+  @media (min-width: 1024px) {
+    .frame { max-width: 1240px; padding: 56px 56px 110px; }
+    h1.title { font-size: 52px; }
+    .editor-note { font-size: 19px; }
+    .layout {
+      display: grid; grid-template-columns: 230px minmax(0, 1fr);
+      column-gap: 60px; align-items: start;
+    }
+    .toc {
+      display: block; position: sticky; top: 40px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .toc-head {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--ink-soft); margin-bottom: 14px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .toc-list { list-style: none; margin: 0 0 18px; padding: 0; counter-reset: toc; }
+    .toc-list li { counter-increment: toc; margin-bottom: 12px; font-size: 13px; line-height: 1.35; }
+    .toc-list li::before { content: counter(toc, decimal-leading-zero); color: var(--accent); margin-right: 8px; }
+    .toc-list a { color: var(--ink-soft); text-decoration: none; }
+    .toc-list a:hover { color: var(--ink); }
+    .toc-watch {
+      display: inline-block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--accent); text-decoration: none; padding-top: 14px; border-top: 1px solid var(--rule);
+    }
+    .body p { max-width: 78ch; }
+  }
+  @media (min-width: 1440px) {
+    .frame { max-width: 1340px; }
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+
+<nav class="edition-nav top" aria-label="Edition navigation">
+  <a class="nav-btn" href="AI-Signal-Edition-007-2026-05-08.html">◄ Edition 007</a>
+  <a class="nav-btn nav-current" href="./">Current edition</a>
+  <a class="nav-btn" href="AI-Signal-Edition-009-2026-05-22.html">Edition 009 ►</a>
+</nav>
+
+<header class="masthead">
+  <div class="badge">📡 AI Signal · Edition 008</div>
+  <h1 class="title">AI-generated zero-days, the Cerebras IPO, and the Musk vs. OpenAI trial concludes.</h1>
+  <div class="title-meta"><span class="date">May 15, 2026</span> · The Week in Signal</div>
+</header>
+
+<div class="layout">
+
+<aside class="toc" aria-label="In this edition">
+  <div class="toc-head">In this edition</div>
+  <ol class="toc-list">
+    <li><a href="#story-1">Google Discovers First AI-Generated Zero-Day Exploit</a></li>
+    <li><a href="#story-2">Cerebras Raises $5.5 Billion in Blockbuster</a></li>
+    <li><a href="#story-3">White House Mulls Executive Order for</a></li>
+    <li><a href="#story-4">Closing Arguments Conclude in Landmark Musk</a></li>
+    <li><a href="#story-5">Anthropic in Talks for $30 Billion</a></li>
+  </ol>
+  <a class="toc-watch" href="#watch">Watch List ↓</a>
+</aside>
+
+<main class="content">
+
+<p class="editor-note">
+This week, the theoretical risks of AI became practical realities. Google's Threat Intelligence Group discovered the first AI-generated zero-day exploit in the wild, marking a shift from AI as a coding assistant to an autonomous vulnerability hunter. Meanwhile, the White House is reportedly mulling an executive order to vet frontier models before deployment, a significant shift in the Trump administration's stance on AI regulation. On the business front, Cerebras Systems kicked off the 2026 IPO season with a massive $5.5 billion raise, while Anthropic is reportedly in talks for a $30 billion round at a staggering $900 billion valuation. Finally, closing arguments wrapped up in the landmark Musk vs. OpenAI trial, leaving the future of the world's most prominent AI lab in the hands of a jury.
+<span class="closer">Five stories. One spectrum. Let's get into it.</span>
+</p>
+
+<article class="story" id="story-1">
+  <div class="story-num">Story 01</div>
+  <h2>Google Discovers First AI-Generated Zero-Day Exploit in the Wild</h2>
+  <p class="deck">Google Threat Intelligence Group identified a threat actor using a zero-day exploit developed with AI to bypass two-factor authentication, marking a major escalation in AI-enabled cyber threats.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="pure">Pure Signal <span class="bars">📶📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🏛️ Government / Regulatory</span>
+  </div>
+  <div class="body">
+    <p>Google Threat Intelligence Group (GTIG) reported the discovery of the first known zero-day exploit developed using artificial intelligence. The exploit, which targeted a two-factor authentication (2FA) bypass vulnerability in a popular open-source system administration tool, was planned for use in a mass exploitation event by cybercriminals before Google intervened.</p>
+    <p>According to GTIG, the vulnerability was a high-level semantic logic flaw rather than a common memory corruption error. Frontier LLMs excel at identifying these types of hardcoded static anomalies, which traditional fuzzers and static analysis tools often miss. The exploit script contained telltale signs of AI generation, including hallucinated CVSS scores and textbook Pythonic formatting characteristic of LLM training data.</p>
+    <p>This discovery validates long-standing concerns about AI accelerating the discovery of novel vulnerabilities. As Palo Alto Networks researchers noted recently, the threat is shifting from AI as a mere coding assistant to an autonomous agent capable of discovering and chaining flaws at a scale that defenders are unprepared for.</p>
+  </div>
+  <aside class="callout" data-type="warning">
+    <span class="callout-label">Warning · The AI vulnerability race has begun</span>
+    As Google's John Hultquist stated, 'There's a misconception that the AI vulnerability race is imminent. The reality is that it's already begun.' The incident highlights the dual nature of AI in cybersecurity, serving as both a sophisticated engine for adversaries and a necessary tool for defenders.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Google Cloud Blog (May 11, 2026), The Hacker News (May 11, 2026)</div>
+</article>
+
+<article class="story" id="story-2">
+  <div class="story-num">Story 02</div>
+  <h2>Cerebras Raises $5.5 Billion in Blockbuster IPO, Valuation Hits $66 Billion</h2>
+  <p class="deck">AI chipmaker Cerebras Systems priced its IPO well above range and saw its stock pop 108% on its first day of trading, signaling massive public market appetite for NVIDIA competitors.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="grounded">Grounded <span class="bars">📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🏢 Source Interest</span>
+  </div>
+  <div class="body">
+    <p>Cerebras Systems, the AI hardware startup known for its massive wafer-scale chips, raised $5.5 billion in its initial public offering on Thursday. The company priced 30 million shares at $185 each—significantly above its revised target range of $150 to $160. The stock opened at $385, a 108% increase, before settling to close at $311, giving the company a $66 billion valuation.</p>
+    <p>The successful IPO marks a dramatic turnaround for Cerebras, which shelved its public offering plans in 2024 due to CFIUS scrutiny over its heavy reliance on Abu Dhabi-based Group 42 for revenue. The company revived its IPO ambitions after reporting $510 million in revenue for 2025 (up 76% year-over-year) and a swing to profitability with $237.8 million in net income.</p>
+    <p>Cerebras has positioned itself as a formidable competitor to NVIDIA, particularly in the inference market. Its customer base now includes OpenAI, Amazon Web Services, and the Mohamed bin Zayed University of Artificial Intelligence, proving that there is substantial demand for alternative AI compute architectures.</p>
+  </div>
+  <aside class="callout" data-type="note">
+    <span class="callout-label">Note · The AnthroPix Effect</span>
+    The Cerebras IPO kicks off what analysts are calling the 'AnthroPix Effect'—a wave of highly anticipated AI public offerings that could reshape the tech sector's market capitalization in 2026.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> TechCrunch (May 14, 2026), Reuters (May 13, 2026)</div>
+</article>
+
+<article class="story" id="story-3">
+  <div class="story-num">Story 03</div>
+  <h2>White House Mulls Executive Order for Pre-Deployment AI Model Vetting</h2>
+  <p class="deck">The Trump administration is reportedly considering an executive order that would require frontier AI models to undergo safety reviews before public release, marking a significant shift in regulatory strategy.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="noise">Noise</span>
+    <span class="tag">🕵️ Missing Context</span>
+    <span class="tag">🏛️ Government / Regulatory</span>
+  </div>
+  <div class="body">
+    <p>The White House is studying a potential executive order that would establish a formal government review process for new AI models, according to National Economic Council Director Kevin Hassett. The proposed system would evaluate models for safety before deployment, drawing comparisons to the FDA drug approval process.</p>
+    <p>The potential move represents a stark reversal for the Trump administration, which previously rolled back Biden-era AI safety reporting requirements to foster innovation and maintain a competitive edge over China. The shift appears driven by growing concerns over the cybersecurity risks posed by advanced models, particularly following reports of Anthropic's Mythos model demonstrating autonomous vulnerability discovery capabilities.</p>
+    <p>The proposed oversight has sparked debate among tech executives, who warn that heavy-handed regulation could slow U.S. innovation. However, the administration is reportedly keen to ensure that the Pentagon and intelligence agencies have early access to evaluate frontier models for national security implications.</p>
+  </div>
+  <aside class="callout" data-type="conflict">
+    <span class="callout-label">Conflict · Innovation vs. Security</span>
+    The administration is caught between its desire to deregulate the tech industry to outpace China and the urgent warnings from national security officials about the dual-use risks of autonomous AI agents.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Yahoo Finance (May 13, 2026), New York Times (May 12, 2026)</div>
+</article>
+
+<article class="story" id="story-4">
+  <div class="story-num">Story 04</div>
+  <h2>Closing Arguments Conclude in Landmark Musk vs. OpenAI Trial</h2>
+  <p class="deck">Lawyers for Elon Musk and OpenAI delivered their final arguments to the jury, capping off a highly publicized trial over the AI lab's transition from a nonprofit to a capped-profit entity.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="grounded">Grounded <span class="bars">📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🏛️ Government / Regulatory</span>
+  </div>
+  <div class="body">
+    <p>The first phase of the Musk v. Altman trial concluded in federal court in Oakland, California, with the nine-person jury set to begin deliberations next week. The jury's verdict will be advisory, leaving the final decision on liability to Judge Yvonne Gonzalez Rogers.</p>
+    <p>During closing arguments, Musk's legal team reiterated claims that OpenAI CEO Sam Altman and President Greg Brockman abandoned the company's founding nonprofit mission, failed to open-source its technology, and unjustly enriched themselves and principal investor Microsoft. OpenAI's attorneys countered that no formal commitments were made regarding corporate structure and argued that Musk's lawsuit was motivated by a desire to benefit his competing startup, xAI.</p>
+    <p>If the jury finds liability, the trial will move to a remedies phase where the judge will consider potential damages. Musk has requested outcomes ranging from the removal of Altman and Brockman to the unwinding of OpenAI's 2025 recapitalization and the return of billions in alleged "ill-gotten gains" to the nonprofit foundation.</p>
+  </div>
+  <aside class="callout" data-type="note">
+    <span class="callout-label">Note · Advisory Jury</span>
+    Judge Gonzalez Rogers opted for an advisory jury, a move legal experts suggest is used when a judge wants community judgment or 'cover' in highly visible, complex cases.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> CNBC (May 14, 2026), AP News (May 14, 2026)</div>
+</article>
+
+<article class="story" id="story-5">
+  <div class="story-num">Story 05</div>
+  <h2>Anthropic in Talks for $30 Billion Raise at $900 Billion Valuation</h2>
+  <p class="deck">Anthropic is reportedly negotiating a massive new funding round that would nearly value the company at $1 trillion, highlighting the staggering capital requirements of frontier AI development.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="noise">Noise</span>
+    <span class="tag">🕵️ Missing Context</span>
+    <span class="tag">🏢 Source Interest</span>
+  </div>
+  <div class="body">
+    <p>Anthropic PBC is in early talks with investors to raise at least $30 billion in fresh financing, according to reports from Bloomberg and the Financial Times. The proposed round would value the AI startup at over $900 billion, making it one of the most valuable private companies in the world.</p>
+    <p>The funding talks come as Anthropic cracks down on unauthorized secondary stock sales, warning investors that transfers via special purpose vehicles (SPVs) are invalid. The company's strict control over its cap table has caused tokens on Solana that claim to offer indirect exposure to Anthropic to plunge by nearly 40%.</p>
+    <p>The sheer scale of the proposed raise underscores the astronomical costs associated with training and deploying next-generation AI models. With competitors like OpenAI recently closing a $122 billion round, the capital arms race in the AI sector shows no signs of slowing down.</p>
+    <p>## Watch List (Next Edition Pipeline)</p>
+    <p>| Topic | Status | Priority |</p>
+    <p>|-------|--------|----------|</p>
+    <p>| Google Gemini Intelligence — Android rollout and multi-step task automation | ● Active | HIGH |</p>
+    <p>| Trump-Xi Summit — AI technology agreements and semiconductor controls | ◐ Watch | HIGH |</p>
+    <p>| OpenAI ChatGPT Ads Manager — beta launch and $2.5B revenue target | ● Active | MEDIUM |</p>
+    <p>| Anthropic Mythos — JD Vance access restrictions and Pentagon deployment | ◐ Watch | HIGH |</p>
+    <p>| DeepSeek V4 full weights release and independent benchmarks on Huawei hardware | ◐ Watch | HIGH |</p>
+  </div>
+  <aside class="callout" data-type="warning">
+    <span class="callout-label">Warning · Secondary Market Crackdown</span>
+    Anthropic's aggressive stance against secondary platforms offering exposure to its shares highlights the tension between immense retail investor demand and the company's desire to tightly control its investor base.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Bloomberg (May 12, 2026), Axios (May 13, 2026), CoinDesk (May 13, 2026)</div>
+</article>
+
+<section class="watchlist" id="watch">
+  <h2>Watch List · Next Edition Pipeline</h2>
+  <table class="watch">
+    <thead>
+      <tr><th>Topic</th><th>Status</th><th>Priority</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Google Gemini Intelligence — Android rollout and multi-step task automation</td>
+        <td class="status">● Active</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>Trump-Xi Summit — AI technology agreements and semiconductor controls</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>OpenAI ChatGPT Ads Manager — beta launch and $2.5B revenue target</td>
+        <td class="status">● Active</td>
+        <td><span class="priority" data-level="MEDIUM">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td>Anthropic Mythos — JD Vance access restrictions and Pentagon deployment</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>DeepSeek V4 full weights release and independent benchmarks on Huawei hardware</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+</div>
+
+<nav class="edition-nav bottom" aria-label="Edition navigation">
+  <a class="nav-btn" href="AI-Signal-Edition-007-2026-05-08.html">◄ Edition 007</a>
+  <a class="nav-btn nav-current" href="./">Current edition</a>
+  <a class="nav-btn" href="AI-Signal-Edition-009-2026-05-22.html">Edition 009 ►</a>
+</nav>
+
+<footer class="colophon">
+  <div>AI Signal · Edition 008 · May 15, 2026</div>
+  <div>Content-equivalent companion to the canonical markdown edition <a href="AI-Signal-Edition-008-2026-05-15.md">AI-Signal-Edition-008-2026-05-15.md</a> — same five stories, same ratings, same callouts, same pipeline; long-form magazine rendering.</div>
+  <div>Build · <a href="https://github.com/DCMikes/ai-newsletter-build">DCMikes/ai-newsletter-build</a> · Publish · <a href="https://github.com/DCMikes/ai-newsletter-publish">DCMikes/ai-newsletter-publish</a></div>
+</footer>
+
+</div>
+</body>
+</html>

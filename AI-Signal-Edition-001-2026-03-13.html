@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Signal — Edition 001 · March 13, 2026</title>
+<style>
+  :root {
+    /* Dark theme */
+    --ink: #e9e7df;
+    --ink-soft: #a6abba;
+    --bg: #0f1117;
+    --bg-card: #171a22;
+    --rule: #2a2f3b;
+    --accent: #d4a85a;
+    --signal-pure: #1f8f45;
+    --signal-grounded: #2f7fd0;
+    --signal-mixed: #b3801f;
+    --signal-speculative: #c25f33;
+    --signal-hearsay: #c93b3b;
+    --warn-bg: #2a2310;
+    --warn-rule: #d8a23e;
+    --note-bg: #142235;
+    --note-rule: #5a9be0;
+    --conflict-bg: #2c1517;
+    --conflict-rule: #e05a5a;
+    --tag-bg: #232734;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: Charter, 'Iowan Old Style', 'Source Serif Pro', Georgia, serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .frame { max-width: 760px; margin: 0 auto; padding: 48px 28px 96px; }
+  header.masthead { border-bottom: 2px solid var(--ink); padding-bottom: 24px; margin-bottom: 36px; }
+  .badge {
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  h1.title { font-size: 44px; line-height: 1.1; margin: 0 0 14px; letter-spacing: -0.01em; }
+  .title-meta { font-size: 14px; color: var(--ink-soft); font-style: italic; }
+  .title-meta .date { font-style: normal; font-weight: 600; color: var(--ink); }
+  .editor-note {
+    font-size: 18px; line-height: 1.6; color: var(--ink-soft);
+    border-left: 3px solid var(--accent); padding: 0 0 0 18px; margin: 0 0 56px;
+  }
+  .editor-note .closer {
+    display: block; margin-top: 14px;
+    font-family: 'JetBrains Mono', monospace; font-style: normal;
+    font-size: 13px; letter-spacing: 0.04em; color: var(--ink); text-transform: uppercase;
+  }
+  .story { margin-bottom: 60px; }
+  .story + .story { border-top: 1px solid var(--rule); padding-top: 56px; }
+  .story-num {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .story h2 { font-size: 28px; line-height: 1.2; margin: 0 0 14px; letter-spacing: -0.005em; }
+  .deck { font-size: 17px; line-height: 1.5; color: var(--ink-soft); margin: 0 0 22px; font-style: italic; }
+  .deck .followup {
+    display: inline-block; font-style: normal;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    background: var(--tag-bg); color: var(--accent);
+    padding: 2px 7px; border-radius: 3px; letter-spacing: 0.05em;
+    margin-right: 6px; vertical-align: 1px;
+  }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 22px; font-size: 13px; }
+  .signal {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', monospace; font-weight: 600;
+    padding: 4px 10px; border-radius: 3px; color: #fff;
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .signal[data-tier="pure"]        { background: var(--signal-pure); }
+  .signal[data-tier="grounded"]    { background: var(--signal-grounded); }
+  .signal[data-tier="mixed"]       { background: var(--signal-mixed); }
+  .signal[data-tier="speculative"] { background: var(--signal-speculative); }
+  .signal[data-tier="hearsay"]     { background: var(--signal-hearsay); }
+  .signal[data-tier="noise"]       { background: #39414f; color: #c7ccd8; }
+  .bars { font-family: 'JetBrains Mono', monospace; letter-spacing: -1px; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--tag-bg); color: var(--ink);
+    padding: 4px 10px; border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.03em;
+  }
+  .body p { margin: 0 0 18px; font-size: 17px; }
+  .callout {
+    border-left: 4px solid var(--note-rule); background: var(--note-bg);
+    padding: 14px 18px; margin: 22px 0; font-size: 15px; line-height: 1.5;
+  }
+  .callout[data-type="warning"]  { border-left-color: var(--warn-rule); background: var(--warn-bg); }
+  .callout[data-type="conflict"] { border-left-color: var(--conflict-rule); background: var(--conflict-bg); }
+  .callout-label {
+    display: block; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+    font-weight: 700; margin-bottom: 6px;
+  }
+  .callout[data-type="note"]     .callout-label { color: var(--note-rule); }
+  .callout[data-type="warning"]  .callout-label { color: var(--warn-rule); }
+  .callout[data-type="conflict"] .callout-label { color: var(--conflict-rule); }
+  .sources {
+    font-size: 13px; color: var(--ink-soft);
+    border-top: 1px dashed var(--rule); padding-top: 14px; margin-top: 18px;
+  }
+  .sources strong { color: var(--ink); font-weight: 600; }
+  section.watchlist { border-top: 2px solid var(--ink); padding-top: 36px; margin-top: 80px; }
+  section.watchlist h2 { font-size: 22px; margin: 0 0 18px; letter-spacing: -0.005em; }
+  table.watch { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.watch th, table.watch td {
+    text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--rule); vertical-align: top;
+  }
+  table.watch th {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-soft); border-bottom: 1px solid var(--ink);
+  }
+  .status { font-family: 'JetBrains Mono', monospace; font-size: 12px; white-space: nowrap; }
+  .priority {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    padding: 2px 8px; border-radius: 3px; background: var(--tag-bg); display: inline-block;
+  }
+  .priority[data-level="HIGH"]   { background: #3a1c1c; color: #f0a0a0; }
+  .priority[data-level="MEDIUM"] { background: #332a14; color: #e6c780; }
+  .priority[data-level="LOW"]    { background: var(--tag-bg); color: var(--ink-soft); }
+  footer.colophon {
+    margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--ink-soft); line-height: 1.7;
+  }
+  footer.colophon a { color: var(--accent); }
+  em { font-style: italic; }
+
+  /* Prev / current / next edition navigation */
+  .edition-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .edition-nav.top    { margin-bottom: 32px; padding-bottom: 18px; border-bottom: 1px solid var(--rule); }
+  .edition-nav.bottom { margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--rule); }
+  .nav-btn {
+    padding: 7px 14px; border: 1px solid var(--rule); border-radius: 6px;
+    color: var(--accent); text-decoration: none; white-space: nowrap;
+  }
+  a.nav-btn:hover { border-color: var(--accent); color: var(--ink); }
+  .nav-current  { color: var(--ink); border-color: transparent; letter-spacing: 0.1em; }
+  .nav-disabled { opacity: 0.32; }
+
+  /* Wide-screen two-pane layout (mobile-first: single column by default) */
+  .toc { display: none; }
+  .story { scroll-margin-top: 24px; }
+  @media (min-width: 1024px) {
+    .frame { max-width: 1240px; padding: 56px 56px 110px; }
+    h1.title { font-size: 52px; }
+    .editor-note { font-size: 19px; }
+    .layout {
+      display: grid; grid-template-columns: 230px minmax(0, 1fr);
+      column-gap: 60px; align-items: start;
+    }
+    .toc {
+      display: block; position: sticky; top: 40px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .toc-head {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--ink-soft); margin-bottom: 14px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .toc-list { list-style: none; margin: 0 0 18px; padding: 0; counter-reset: toc; }
+    .toc-list li { counter-increment: toc; margin-bottom: 12px; font-size: 13px; line-height: 1.35; }
+    .toc-list li::before { content: counter(toc, decimal-leading-zero); color: var(--accent); margin-right: 8px; }
+    .toc-list a { color: var(--ink-soft); text-decoration: none; }
+    .toc-list a:hover { color: var(--ink); }
+    .toc-watch {
+      display: inline-block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--accent); text-decoration: none; padding-top: 14px; border-top: 1px solid var(--rule);
+    }
+    .body p { max-width: 78ch; }
+  }
+  @media (min-width: 1440px) {
+    .frame { max-width: 1340px; }
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+
+<nav class="edition-nav top" aria-label="Edition navigation">
+  <span class="nav-btn nav-disabled" title="This is the first edition">◄ Older</span>
+  <a class="nav-btn nav-current" href="./">Current edition</a>
+  <a class="nav-btn" href="AI-Signal-Edition-002-2026-03-27.html">Edition 002 ►</a>
+</nav>
+
+<header class="masthead">
+  <div class="badge">📡 AI Signal · Edition 001</div>
+  <h1 class="title">Lawsuits, layoffs, and a keynote that could reshape the stack.</h1>
+  <div class="title-meta"><span class="date">March 13, 2026</span> · The Week in Signal</div>
+</header>
+
+<div class="layout">
+
+<aside class="toc" aria-label="In this edition">
+  <div class="toc-head">In this edition</div>
+  <ol class="toc-list">
+    <li><a href="#story-1">Anthropic vs. the Pentagon</a></li>
+    <li><a href="#story-2">OpenAI at $730 Billion</a></li>
+    <li><a href="#story-3">The AI Layoff Template</a></li>
+    <li><a href="#story-4">Perplexity's "$225K Marketing Stack" Case Study</a></li>
+    <li><a href="#story-5">Apple's Siri Overhaul and the Gemini</a></li>
+  </ol>
+  <a class="toc-watch" href="#watch">Watch List ↓</a>
+</aside>
+
+<main class="content">
+
+<p class="editor-note">
+This week the AI industry collided with three forces it has long preferred to avoid: the federal government, the energy grid, and its own workforce. Anthropic is suing the Pentagon. Senate Democrats are probing eight AI companies over gas-powered data centers. Block just cut 40% of its staff and called it a feature, not a bug. Meanwhile, NVIDIA is about to take the stage at GTC 2026 — and Meta quietly delayed its most important model of the year.
+<span class="closer">Five stories. One spectrum. Let's get into it.</span>
+</p>
+
+<article class="story" id="story-1">
+  <div class="story-num">Story 01</div>
+  <h2>Anthropic vs. the Pentagon: The Lawsuit That Could Reshape the AI-Defense Relationship</h2>
+  <p class="deck">After refusing to give the DoD unrestricted access to Claude, Anthropic was designated a "supply chain risk." Now it's fighting back in federal court — and the stakes extend far beyond one contract.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="grounded">Grounded <span class="bars">📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🏛️ Government / Regulatory</span>
+    <span class="tag">⚖️ Source Conflict</span>
+  </div>
+  <div class="body">
+    <p>On March 9, 2026, Anthropic filed two simultaneous federal lawsuits against the Department of Defense, challenging the Pentagon's decision to designate the company a "supply chain risk" and ordering all federal agencies to stop using Claude within six months. The underlying dispute is straightforward: Anthropic refused to grant the DoD unrestricted access to its frontier model, insisting on contractual prohibitions against mass surveillance of U.S. citizens and autonomous lethal weapons without human oversight. The Pentagon's response was to cancel a $200 million contract signed just eight months prior and label the company a national security liability.</p>
+    <p>The legal arguments Anthropic is advancing are substantive. The company cites 10 U.S.C. § 3252 procedural limitations, First Amendment and due process claims, and the Luokung and Xiaomi precedents — cases where courts struck down similar national security designations as procedurally defective. The inherent contradiction in the government's position — Anthropic is dangerous, but you have six months to phase it out — may itself be the strongest argument.</p>
+    <p>What makes this story more than a contract dispute is the commercial blast radius. Anthropic's Claude runs on classified military networks and is embedded across AWS, Google Cloud, Accenture, Deloitte, and hundreds of defense contractors. A sustained "supply chain risk" designation could force every federal contractor to certify zero exposure to Anthropic products — a requirement that would cascade through the entire enterprise software ecosystem. OpenAI has already moved to fill the void.</p>
+    <p>The geopolitical dimension is equally uncomfortable. Both Anthropic and OpenAI have publicly accused Chinese labs of distilling their models; those open-source derivatives, including DeepSeek, are now available to the PLA with zero guardrails. The question the lawsuit forces into the open: does restricting your own frontier AI company while adversaries train on pirated versions of the same technology actually improve national security?</p>
+  </div>
+  <aside class="callout" data-type="conflict">
+    <span class="callout-label">Conflict · The key conflict</span>
+    The DoD has not publicly released the technical basis for its safety determination. Without that documentation, it is impossible to evaluate whether the blacklisting reflects a genuine safety assessment or a procurement dispute dressed up in safety language.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Reuters (March 9, 2026), Fortune (March 12, 2026), Washington Post (March 9, 2026), The Nation (March 11, 2026), court filings (PACER)</div>
+</article>
+
+<article class="story" id="story-2">
+  <div class="story-num">Story 02</div>
+  <h2>OpenAI at $730 Billion: The Raise, the Valuation, and What "Pre-Money" Actually Means</h2>
+  <p class="deck">OpenAI closed a $40 billion funding round at a $730 billion pre-money valuation. Amazon, NVIDIA, and SoftBank are in. The number is real. The framing around it is not.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="grounded">Grounded <span class="bars">📶📶📶📶</span></span>
+    <span class="tag">🔥 Hype Alert</span>
+    <span class="tag">🏢 Source Interest</span>
+  </div>
+  <div class="body">
+    <p>OpenAI closed a $40 billion funding round this week, bringing its pre-money valuation to $730 billion. The round was led by SoftBank, with Amazon and NVIDIA participating alongside a broad syndicate of institutional investors. The capital will fund compute infrastructure, research, and the continued buildout of OpenAI's product ecosystem.</p>
+    <p>The number that matters most in this story is the one most headlines omitted: "pre-money." The $730 billion figure is the valuation before the $40 billion was added. Post-money, OpenAI is valued at approximately $770 billion — still a staggering figure, but the distinction matters for anyone trying to understand the actual cap table arithmetic.</p>
+    <p>The strategic logic of the round is clearer than the valuation math. SoftBank's involvement deepens the Stargate infrastructure partnership. Amazon's participation reinforces the AWS-Claude relationship and signals continued alignment between the two companies' AI strategies. NVIDIA's check is essentially a bet on its own ecosystem — more OpenAI compute means more NVIDIA silicon.</p>
+  </div>
+  <aside class="callout" data-type="warning">
+    <span class="callout-label">Warning · Valuation context</span>
+    Private company valuations are negotiated numbers, not market prices. The $730 billion figure reflects what sophisticated investors agreed to pay for a specific stake — it does not represent a liquid market assessment of OpenAI's worth.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Bloomberg (March 11, 2026), Wall Street Journal (March 11, 2026), OpenAI press release (March 11, 2026)</div>
+</article>
+
+<article class="story" id="story-3">
+  <div class="story-num">Story 03</div>
+  <h2>The AI Layoff Template: Block Cut 40%, Atlassian Cut 5% — And Both Called It a Strategy</h2>
+  <p class="deck">Jack Dorsey didn't just lay off 4,000 people. He published a manifesto. The pattern of companies using AI capability gains as cover for workforce restructuring is accelerating — and the framing deserves scrutiny.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="grounded">Grounded <span class="bars">📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🔥 Hype Alert</span>
+    <span class="tag">🕵️ Missing Context</span>
+  </div>
+  <div class="body">
+    <p>On February 26, 2026, Jack Dorsey announced Block would reduce its workforce from over 10,000 employees to just under 6,000 — a cut of more than 40%. The stated rationale was not financial distress. Block had just delivered Q4 gross profit of $2.87 billion, up 14% year-over-year. Dorsey's explanation was strategic: AI now allows a smaller team to do more, and a leaner organization moves faster.</p>
+    <p>Atlassian followed a week later with a 5% reduction — approximately 500 roles — framed similarly as an AI-enabled efficiency play. The company said it was reallocating resources toward AI product development rather than headcount.</p>
+    <p>The pattern is worth naming clearly: companies are using genuine AI productivity gains as rhetorical cover for workforce reductions that may have multiple causes. AI capability is real. The causal claim — that AI directly caused these specific layoffs — is much harder to verify. Block's cut is large enough that cost structure, not just AI efficiency, is almost certainly a factor.</p>
+  </div>
+  <aside class="callout" data-type="warning">
+    <span class="callout-label">Warning · Causation vs. correlation</span>
+    CEOs have strong incentives to frame layoffs as forward-looking AI strategy rather than cost-cutting. The AI causation narrative is not independently verifiable from public disclosures alone.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Block press release (February 26, 2026), Atlassian press release (March 5, 2026), TechCrunch (March 6, 2026)</div>
+</article>
+
+<article class="story" id="story-4">
+  <div class="story-num">Story 04</div>
+  <h2>Perplexity's "$225K Marketing Stack" Case Study: What the Numbers Actually Show</h2>
+  <p class="deck">Perplexity published a case study claiming a company replaced a $225,000 annual marketing stack with its AI. The claim is real. The evidence base is a single vendor-sourced report.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="speculative">Speculative <span class="bars">📶📶</span></span>
+    <span class="tag">🔥 Hype Alert</span>
+    <span class="tag">🏢 Source Interest</span>
+  </div>
+  <div class="body">
+    <p>Perplexity published a case study this week claiming that a mid-sized B2B company replaced a $225,000 annual marketing technology stack — SEO tools, content platforms, analytics subscriptions — with Perplexity Pro at $200 per month. The case study has circulated widely on LinkedIn and in AI newsletters as evidence of AI's cost-displacement potential.</p>
+    <p>The signal problem here is structural: this is a single company's self-reported experience, published by the vendor with a direct commercial interest in the narrative. There is no independent verification of the $225,000 baseline, no methodology for how the comparison was constructed, and no information about what capabilities may have been lost in the transition.</p>
+    <p>The broader claim — that AI search and synthesis tools can replace specialized marketing software — may well be true for some use cases. But a single vendor case study is not evidence of a generalizable pattern.</p>
+  </div>
+  <aside class="callout" data-type="warning">
+    <span class="callout-label">Warning · Single source, vendor-published</span>
+    This case study is the definition of source-interest content. Treat it as a marketing claim, not a data point, until independently replicated.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Perplexity blog (March 2026)</div>
+</article>
+
+<article class="story" id="story-5">
+  <div class="story-num">Story 05</div>
+  <h2>Apple's Siri Overhaul and the Gemini Integration: What's Confirmed, What's Rumored</h2>
+  <p class="deck">Reports of a deep Siri-Gemini integration have been circulating for months. Here's what Apple has actually confirmed, what Google has said, and what remains in the rumor layer.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="mixed">Mixed <span class="bars">📶📶📶</span></span>
+    <span class="tag">🕵️ Missing Context</span>
+  </div>
+  <div class="body">
+    <p>Multiple outlets reported this week that Apple is planning a significant Siri overhaul that would include deeper integration with Google's Gemini models, potentially replacing or supplementing Apple's own on-device AI with cloud-based Gemini capabilities for complex queries. The reports cite unnamed sources familiar with Apple's plans.</p>
+    <p>What is confirmed: Apple announced at WWDC 2025 that it would integrate ChatGPT into Siri for certain query types, with user consent. That integration shipped in iOS 18.2. Apple also confirmed it is in discussions with multiple AI providers about additional integrations.</p>
+    <p>What is not confirmed: the specific architecture of any Gemini integration, the timeline, the scope of what Gemini would handle versus Apple's own models, and whether the integration would be opt-in or default.</p>
+    <p>## Watch List (Next Edition Pipeline)</p>
+    <p>| Topic | Status | Priority |</p>
+    <p>|-------|--------|----------|</p>
+    <p>| NVIDIA GTC 2026 keynote outcomes — announced vs. shipped | ● Active | HIGH |</p>
+    <p>| Anthropic Pentagon lawsuit — court hearing dates | ◐ Watch | HIGH |</p>
+    <p>| Meta Llama 4 delay — new timeline | ◐ Watch | MEDIUM |</p>
+    <p>| Apple Siri / Gemini integration — primary source confirmation | ? Verify | HIGH |</p>
+  </div>
+  <aside class="callout" data-type="warning">
+    <span class="callout-label">Warning · Unnamed source reporting</span>
+    The Gemini integration reports rely entirely on unnamed sources. Apple has not confirmed the specific details. Treat as credible rumor, not confirmed fact.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Bloomberg (March 2026), The Information (March 2026), Apple WWDC 2025 announcements</div>
+</article>
+
+<section class="watchlist" id="watch">
+  <h2>Watch List · Next Edition Pipeline</h2>
+  <table class="watch">
+    <thead>
+      <tr><th>Topic</th><th>Status</th><th>Priority</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>NVIDIA GTC 2026 keynote outcomes — announced vs. shipped</td>
+        <td class="status">● Active</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>Anthropic Pentagon lawsuit — court hearing dates</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>Meta Llama 4 delay — new timeline</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="MEDIUM">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td>Apple Siri / Gemini integration — primary source confirmation</td>
+        <td class="status">? Verify</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+</div>
+
+<nav class="edition-nav bottom" aria-label="Edition navigation">
+  <span class="nav-btn nav-disabled" title="This is the first edition">◄ Older</span>
+  <a class="nav-btn nav-current" href="./">Current edition</a>
+  <a class="nav-btn" href="AI-Signal-Edition-002-2026-03-27.html">Edition 002 ►</a>
+</nav>
+
+<footer class="colophon">
+  <div>AI Signal · Edition 001 · March 13, 2026</div>
+  <div>Content-equivalent companion to the canonical markdown edition <a href="AI-Signal-Edition-001-2026-03-13.md">AI-Signal-Edition-001-2026-03-13.md</a> — same five stories, same ratings, same callouts, same pipeline; long-form magazine rendering.</div>
+  <div>Build · <a href="https://github.com/DCMikes/ai-newsletter-build">DCMikes/ai-newsletter-build</a> · Publish · <a href="https://github.com/DCMikes/ai-newsletter-publish">DCMikes/ai-newsletter-publish</a></div>
+</footer>
+
+</div>
+</body>
+</html>

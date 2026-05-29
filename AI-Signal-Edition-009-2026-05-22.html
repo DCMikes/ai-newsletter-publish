@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Signal — Edition 009 · May 22, 2026</title>
+<style>
+  :root {
+    /* Dark theme */
+    --ink: #e9e7df;
+    --ink-soft: #a6abba;
+    --bg: #0f1117;
+    --bg-card: #171a22;
+    --rule: #2a2f3b;
+    --accent: #d4a85a;
+    --signal-pure: #1f8f45;
+    --signal-grounded: #2f7fd0;
+    --signal-mixed: #b3801f;
+    --signal-speculative: #c25f33;
+    --signal-hearsay: #c93b3b;
+    --warn-bg: #2a2310;
+    --warn-rule: #d8a23e;
+    --note-bg: #142235;
+    --note-rule: #5a9be0;
+    --conflict-bg: #2c1517;
+    --conflict-rule: #e05a5a;
+    --tag-bg: #232734;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: Charter, 'Iowan Old Style', 'Source Serif Pro', Georgia, serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .frame { max-width: 760px; margin: 0 auto; padding: 48px 28px 96px; }
+  header.masthead { border-bottom: 2px solid var(--ink); padding-bottom: 24px; margin-bottom: 36px; }
+  .badge {
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  h1.title { font-size: 44px; line-height: 1.1; margin: 0 0 14px; letter-spacing: -0.01em; }
+  .title-meta { font-size: 14px; color: var(--ink-soft); font-style: italic; }
+  .title-meta .date { font-style: normal; font-weight: 600; color: var(--ink); }
+  .editor-note {
+    font-size: 18px; line-height: 1.6; color: var(--ink-soft);
+    border-left: 3px solid var(--accent); padding: 0 0 0 18px; margin: 0 0 56px;
+  }
+  .editor-note .closer {
+    display: block; margin-top: 14px;
+    font-family: 'JetBrains Mono', monospace; font-style: normal;
+    font-size: 13px; letter-spacing: 0.04em; color: var(--ink); text-transform: uppercase;
+  }
+  .story { margin-bottom: 60px; }
+  .story + .story { border-top: 1px solid var(--rule); padding-top: 56px; }
+  .story-num {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .story h2 { font-size: 28px; line-height: 1.2; margin: 0 0 14px; letter-spacing: -0.005em; }
+  .deck { font-size: 17px; line-height: 1.5; color: var(--ink-soft); margin: 0 0 22px; font-style: italic; }
+  .deck .followup {
+    display: inline-block; font-style: normal;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    background: var(--tag-bg); color: var(--accent);
+    padding: 2px 7px; border-radius: 3px; letter-spacing: 0.05em;
+    margin-right: 6px; vertical-align: 1px;
+  }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 22px; font-size: 13px; }
+  .signal {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', monospace; font-weight: 600;
+    padding: 4px 10px; border-radius: 3px; color: #fff;
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .signal[data-tier="pure"]        { background: var(--signal-pure); }
+  .signal[data-tier="grounded"]    { background: var(--signal-grounded); }
+  .signal[data-tier="mixed"]       { background: var(--signal-mixed); }
+  .signal[data-tier="speculative"] { background: var(--signal-speculative); }
+  .signal[data-tier="hearsay"]     { background: var(--signal-hearsay); }
+  .signal[data-tier="noise"]       { background: #39414f; color: #c7ccd8; }
+  .bars { font-family: 'JetBrains Mono', monospace; letter-spacing: -1px; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--tag-bg); color: var(--ink);
+    padding: 4px 10px; border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.03em;
+  }
+  .body p { margin: 0 0 18px; font-size: 17px; }
+  .callout {
+    border-left: 4px solid var(--note-rule); background: var(--note-bg);
+    padding: 14px 18px; margin: 22px 0; font-size: 15px; line-height: 1.5;
+  }
+  .callout[data-type="warning"]  { border-left-color: var(--warn-rule); background: var(--warn-bg); }
+  .callout[data-type="conflict"] { border-left-color: var(--conflict-rule); background: var(--conflict-bg); }
+  .callout-label {
+    display: block; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+    font-weight: 700; margin-bottom: 6px;
+  }
+  .callout[data-type="note"]     .callout-label { color: var(--note-rule); }
+  .callout[data-type="warning"]  .callout-label { color: var(--warn-rule); }
+  .callout[data-type="conflict"] .callout-label { color: var(--conflict-rule); }
+  .sources {
+    font-size: 13px; color: var(--ink-soft);
+    border-top: 1px dashed var(--rule); padding-top: 14px; margin-top: 18px;
+  }
+  .sources strong { color: var(--ink); font-weight: 600; }
+  section.watchlist { border-top: 2px solid var(--ink); padding-top: 36px; margin-top: 80px; }
+  section.watchlist h2 { font-size: 22px; margin: 0 0 18px; letter-spacing: -0.005em; }
+  table.watch { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.watch th, table.watch td {
+    text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--rule); vertical-align: top;
+  }
+  table.watch th {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-soft); border-bottom: 1px solid var(--ink);
+  }
+  .status { font-family: 'JetBrains Mono', monospace; font-size: 12px; white-space: nowrap; }
+  .priority {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    padding: 2px 8px; border-radius: 3px; background: var(--tag-bg); display: inline-block;
+  }
+  .priority[data-level="HIGH"]   { background: #3a1c1c; color: #f0a0a0; }
+  .priority[data-level="MEDIUM"] { background: #332a14; color: #e6c780; }
+  .priority[data-level="LOW"]    { background: var(--tag-bg); color: var(--ink-soft); }
+  footer.colophon {
+    margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--ink-soft); line-height: 1.7;
+  }
+  footer.colophon a { color: var(--accent); }
+  em { font-style: italic; }
+
+  /* Prev / current / next edition navigation */
+  .edition-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .edition-nav.top    { margin-bottom: 32px; padding-bottom: 18px; border-bottom: 1px solid var(--rule); }
+  .edition-nav.bottom { margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--rule); }
+  .nav-btn {
+    padding: 7px 14px; border: 1px solid var(--rule); border-radius: 6px;
+    color: var(--accent); text-decoration: none; white-space: nowrap;
+  }
+  a.nav-btn:hover { border-color: var(--accent); color: var(--ink); }
+  .nav-current  { color: var(--ink); border-color: transparent; letter-spacing: 0.1em; }
+  .nav-disabled { opacity: 0.32; }
+
+  /* Wide-screen two-pane layout (mobile-first: single column by default) */
+  .toc { display: none; }
+  .story { scroll-margin-top: 24px; }
+  @media (min-width: 1024px) {
+    .frame { max-width: 1240px; padding: 56px 56px 110px; }
+    h1.title { font-size: 52px; }
+    .editor-note { font-size: 19px; }
+    .layout {
+      display: grid; grid-template-columns: 230px minmax(0, 1fr);
+      column-gap: 60px; align-items: start;
+    }
+    .toc {
+      display: block; position: sticky; top: 40px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .toc-head {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--ink-soft); margin-bottom: 14px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .toc-list { list-style: none; margin: 0 0 18px; padding: 0; counter-reset: toc; }
+    .toc-list li { counter-increment: toc; margin-bottom: 12px; font-size: 13px; line-height: 1.35; }
+    .toc-list li::before { content: counter(toc, decimal-leading-zero); color: var(--accent); margin-right: 8px; }
+    .toc-list a { color: var(--ink-soft); text-decoration: none; }
+    .toc-list a:hover { color: var(--ink); }
+    .toc-watch {
+      display: inline-block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--accent); text-decoration: none; padding-top: 14px; border-top: 1px solid var(--rule);
+    }
+    .body p { max-width: 78ch; }
+  }
+  @media (min-width: 1440px) {
+    .frame { max-width: 1340px; }
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+
+<nav class="edition-nav top" aria-label="Edition navigation">
+  <a class="nav-btn" href="AI-Signal-Edition-008-2026-05-15.html">◄ Edition 008</a>
+  <a class="nav-btn nav-current" href="./">Current edition</a>
+  <a class="nav-btn" href="AI-Signal-Edition-010-2026-05-29.html">Edition 010 ►</a>
+</nav>
+
+<header class="masthead">
+  <div class="badge">📡 AI Signal · Edition 009</div>
+  <h1 class="title">OpenAI IPO filing, Trump scraps AI EO, and the cost of speed.</h1>
+  <div class="title-meta"><span class="date">May 22, 2026</span> · The Week in Signal</div>
+</header>
+
+<div class="layout">
+
+<aside class="toc" aria-label="In this edition">
+  <div class="toc-head">In this edition</div>
+  <ol class="toc-list">
+    <li><a href="#story-1">OpenAI Prepares Confidential IPO Filing, Targeting</a></li>
+    <li><a href="#story-2">Trump Abruptly Cancels AI Oversight Executive</a></li>
+    <li><a href="#story-3">Google Launches Gemini 3.5 Flash</a></li>
+    <li><a href="#story-4">Anthropic Briefs Global Financial Regulators on</a></li>
+    <li><a href="#story-5">NVIDIA Reports $81.6 Billion Q1 Revenue</a></li>
+  </ol>
+  <a class="toc-watch" href="#watch">Watch List ↓</a>
+</aside>
+
+<main class="content">
+
+<p class="editor-note">
+This week the AI industry experienced a collision of massive capital events, sudden regulatory reversals, and shifting model economics. OpenAI is reportedly preparing to confidentially file its IPO prospectus, setting up a monumental showdown with SpaceX for public market dominance. Meanwhile, President Trump abruptly canceled a highly anticipated executive order on AI oversight just hours before signing, citing concerns over hampering American competitiveness against China. On the product front, Google launched Gemini 3.5 Flash, claiming the title of the fastest model in its class—but at a significantly higher operating cost that forces companies to rethink AI ROI. Finally, Anthropic took the unprecedented step of briefing the global Financial Stability Board on cyber flaws uncovered by its unreleased Mythos model, and NVIDIA reported a staggering $81.6 billion in Q1 revenue as the Blackwell cycle begins.
+<span class="closer">Five stories. One spectrum. Let's get into it.</span>
+</p>
+
+<article class="story" id="story-1">
+  <div class="story-num">Story 01</div>
+  <h2>OpenAI Prepares Confidential IPO Filing, Targeting September Listing</h2>
+  <p class="deck">OpenAI is working with Goldman Sachs and Morgan Stanley to confidentially file its S-1 prospectus as early as this week, aiming for a public debut between Labor Day and Thanksgiving 2026.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="grounded">Grounded <span class="bars">📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🏢 Source Interest</span>
+  </div>
+  <div class="body">
+    <p>OpenAI is preparing to submit a confidential draft registration statement to the SEC for an initial public offering, with Goldman Sachs and Morgan Stanley acting as lead underwriters. Multiple outlets report the filing could land as early as May 22, positioning the ChatGPT maker for a highly anticipated public listing in the fall of 2026.</p>
+    <p>The confidential filing process allows OpenAI to negotiate with regulators and refine its prospectus privately before opening its books to public scrutiny. The move comes shortly after OpenAI secured a major legal victory when a federal jury dismissed Elon Musk's lawsuit challenging the company's transition to a capped-profit structure, removing a significant overhang on its path to public markets.</p>
+    <p>OpenAI's IPO will serve as a massive stress test for the AI sector's valuation multiples. The company was valued at $852 billion in a recent funding round, but public investors will demand clear visibility into its revenue run rate, massive compute costs, and path to profitability. The listing will also inevitably be benchmarked against SpaceX, which filed its own S-1 earlier this month.</p>
+  </div>
+  <aside class="callout" data-type="note">
+    <span class="callout-label">Note · The S-1 reveal</span>
+    While the filing is confidential now, OpenAI's S-1 will eventually become public at least 15 days before its roadshow, offering the first unfiltered look at the actual unit economics of frontier model development.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Wall Street Journal (May 19, 2026), CNBC (May 20, 2026), Crypto Briefing (May 21, 2026)</div>
+</article>
+
+<article class="story" id="story-2">
+  <div class="story-num">Story 02</div>
+  <h2>Trump Abruptly Cancels AI Oversight Executive Order Hours Before Signing</h2>
+  <p class="deck">President Trump called off a scheduled White House ceremony to sign an executive order establishing voluntary government reviews for frontier AI models, citing concerns it would hinder U.S. competition with China.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="pure">Pure Signal <span class="bars">📶📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🏛️ Government / Regulatory</span>
+    <span class="tag">⚖️ Source Conflict</span>
+  </div>
+  <div class="body">
+    <p>In a sudden reversal, the White House canceled a Thursday afternoon ceremony where President Trump was scheduled to sign a new executive order on artificial intelligence. The order would have established a framework for AI developers to voluntarily submit their frontier models for government security review before public deployment.</p>
+    <p>President Trump told reporters he postponed the signing because he "didn't like certain aspects of it," specifically expressing concern that the oversight could slow down American tech companies in the AI race against China. The cancellation occurred just hours before top tech CEOs were expected to attend the signing.</p>
+    <p>The scrapped order highlights a deep internal division within the administration between national security hawks, who warn of the dual-use risks of autonomous AI agents (such as the recent zero-day exploits), and pro-business deregulators focused on maintaining the U.S. technological edge. The decision follows Trump's recent summit with Chinese President Xi Jinping, where technology competition was a central, if under-discussed, dynamic.</p>
+  </div>
+  <aside class="callout" data-type="conflict">
+    <span class="callout-label">Conflict · Security vs. Speed</span>
+    The abrupt cancellation underscores the fundamental tension in current U.S. AI policy: the desire to outpace China in AI development directly conflicts with the intelligence community's push to secure models against exploitation and misuse.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> AOL / NY Post (May 21, 2026), New York Times (May 21, 2026), Reuters (May 21, 2026)</div>
+</article>
+
+<article class="story" id="story-3">
+  <div class="story-num">Story 03</div>
+  <h2>Google Launches Gemini 3.5 Flash: Faster Output, But at a Steep Premium</h2>
+  <p class="deck">Google DeepMind unveiled Gemini 3.5 Flash, boasting class-leading speed and agentic capabilities. However, a massive increase in token consumption for complex tasks makes it significantly more expensive to run than its predecessor.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="grounded">Grounded <span class="bars">📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🏢 Source Interest</span>
+  </div>
+  <div class="body">
+    <p>At Google I/O 2026, the company launched Gemini 3.5 Flash, positioning it as the fastest model in its intelligence tier. Independent benchmarks from Artificial Analysis confirm the model delivers over 280 output tokens per second and shows massive improvements in agentic tasks and multimodal reasoning, achieving the highest recorded score on the MMMU-Pro benchmark.</p>
+    <p>However, the performance gains come with a severe cost penalty. Google tripled the base token pricing compared to Gemini 3 Flash. More critically, Gemini 3.5 Flash requires significantly more interaction steps (an average of 49 turns per task) to complete agentic workflows. As a result, the total cost to run the model in benchmark testing is 5.5 times higher than its predecessor, and actually 75% more expensive than the "premium" Gemini 3.1 Pro model.</p>
+    <p>The pricing structure reflects an industry-wide trend seen with OpenAI's GPT-5.5 and Anthropic's Claude Opus 4.7: as models shift from simple chatbots to autonomous agents that require extensive planning and tool use, the underlying compute costs per task are skyrocketing, forcing enterprise customers to closely evaluate the actual ROI of deploying frontier models.</p>
+  </div>
+  <aside class="callout" data-type="warning">
+    <span class="callout-label">Warning · The coding gap</span>
+    Despite its overall intelligence gains, Gemini 3.5 Flash notably struggles with programming tasks, scoring well behind competitors like GPT-5.5 and Claude Opus 4.7, which limits its utility for developer-focused agentic workflows.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Google Blog (May 20, 2026), The Decoder / Artificial Analysis (May 20, 2026)</div>
+</article>
+
+<article class="story" id="story-4">
+  <div class="story-num">Story 04</div>
+  <h2>Anthropic Briefs Global Financial Regulators on Cyber Flaws Uncovered by Mythos</h2>
+  <p class="deck">In an unprecedented move, Anthropic agreed to brief the Financial Stability Board on severe vulnerabilities its unreleased Mythos model found in the global financial system's cyber defenses.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="pure">Pure Signal <span class="bars">📶📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🏛️ Government / Regulatory</span>
+    <span class="tag">🏛️ Government / Regulatory</span>
+  </div>
+  <div class="body">
+    <p>Anthropic is briefing leading finance ministries and central banks regarding vulnerabilities in the global financial system's cyber defenses. The briefing was requested by Andrew Bailey, governor of the Bank of England and chair of the Financial Stability Board (FSB), which coordinates financial regulation for the G20 nations.</p>
+    <p>The initiative stems from Anthropic's discovery last month that its unreleased Claude Mythos Preview model had identified thousands of severe security flaws across major operating systems and browsers. Access to Mythos remains heavily restricted to roughly 40 organizations, including major banks like JPMorgan Chase, following requests from the White House to limit its distribution.</p>
+    <p>The FSB briefing highlights a growing recognition among global regulators that advanced AI models possess offensive capabilities that could trigger a "macro-financial shock," as recently warned by the IMF. It also positions Anthropic as a cooperative partner with regulators, contrasting with the more aggressive deployment strategies of its competitors.</p>
+  </div>
+  <aside class="callout" data-type="note">
+    <span class="callout-label">Note · The dual-use dilemma</span>
+    The Mythos situation perfectly encapsulates the dual-use nature of frontier AI: the same reasoning capabilities that make a model an exceptional coding assistant also make it a devastatingly effective autonomous vulnerability scanner.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Financial Times (May 18, 2026), The Decoder (May 18, 2026)</div>
+</article>
+
+<article class="story" id="story-5">
+  <div class="story-num">Story 05</div>
+  <h2>NVIDIA Reports $81.6 Billion Q1 Revenue as the Blackwell Cycle Begins</h2>
+  <p class="deck">NVIDIA crushed earnings expectations with an 85% year-over-year revenue increase, signaling that the massive infrastructure buildout for AI factories is still accelerating.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="grounded">Grounded <span class="bars">📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🏢 Source Interest</span>
+  </div>
+  <div class="body">
+    <p>NVIDIA reported record revenue of $81.6 billion for its first quarter of fiscal 2027, an 85% increase from the previous year and well above Wall Street estimates. The company's Data Center segment drove the surge, generating $75.2 billion in revenue as hyperscalers and enterprises continue to aggressively procure GPUs.</p>
+    <p>CEO Jensen Huang framed the results around the arrival of "agentic AI" and the ongoing construction of "AI factories." The quarter marks the beginning of the revenue cycle for NVIDIA's new Blackwell architecture, which is seeing robust demand. The company also announced an $80 billion share repurchase authorization and significantly increased its quarterly dividend.</p>
+    <p>NVIDIA introduced a new financial reporting framework, splitting its business into Data Center and Edge Computing, reflecting its strategy to push AI processing out of centralized clouds and into PCs, vehicles, and robotics. The staggering financial results confirm that despite debates over AI application ROI, the capital expenditure on foundational compute infrastructure remains unabated.</p>
+    <p>## Watch List (Next Edition Pipeline)</p>
+    <p>| Topic | Status | Priority |</p>
+    <p>|-------|--------|----------|</p>
+    <p>| OpenAI S-1 Filing — Revenue run rate, compute costs, and profitability timeline | ◐ Watch | HIGH |</p>
+    <p>| EU AI Act Omnibus — June trilogue resumption and final August deadline status | ● Active | HIGH |</p>
+    <p>| Anthropic IPO — S-1 timing and valuation alignment with private market rounds | ◐ Watch | HIGH |</p>
+    <p>| Google Gemini 3.5 Pro — Release timeline and independent coding benchmarks | ◐ Watch | MEDIUM |</p>
+    <p>| White House AI Executive Order — Rescheduling timeline or permanent shelving | ● Active | HIGH |</p>
+  </div>
+  <aside class="callout" data-type="note">
+    <span class="callout-label">Note · The capital expenditure reality</span>
+    NVIDIA's $75.2 billion in Data Center revenue represents actual cash spent by tech giants and enterprises in a single quarter. Until those companies slow their purchasing, debates about an 'AI bubble' remain largely theoretical.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> NVIDIA Press Release (May 20, 2026), CNBC (May 20, 2026)</div>
+</article>
+
+<section class="watchlist" id="watch">
+  <h2>Watch List · Next Edition Pipeline</h2>
+  <table class="watch">
+    <thead>
+      <tr><th>Topic</th><th>Status</th><th>Priority</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>OpenAI S-1 Filing — Revenue run rate, compute costs, and profitability timeline</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>EU AI Act Omnibus — June trilogue resumption and final August deadline status</td>
+        <td class="status">● Active</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>Anthropic IPO — S-1 timing and valuation alignment with private market rounds</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>Google Gemini 3.5 Pro — Release timeline and independent coding benchmarks</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="MEDIUM">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td>White House AI Executive Order — Rescheduling timeline or permanent shelving</td>
+        <td class="status">● Active</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+</div>
+
+<nav class="edition-nav bottom" aria-label="Edition navigation">
+  <a class="nav-btn" href="AI-Signal-Edition-008-2026-05-15.html">◄ Edition 008</a>
+  <a class="nav-btn nav-current" href="./">Current edition</a>
+  <a class="nav-btn" href="AI-Signal-Edition-010-2026-05-29.html">Edition 010 ►</a>
+</nav>
+
+<footer class="colophon">
+  <div>AI Signal · Edition 009 · May 22, 2026</div>
+  <div>Content-equivalent companion to the canonical markdown edition <a href="AI-Signal-Edition-009-2026-05-22.md">AI-Signal-Edition-009-2026-05-22.md</a> — same five stories, same ratings, same callouts, same pipeline; long-form magazine rendering.</div>
+  <div>Build · <a href="https://github.com/DCMikes/ai-newsletter-build">DCMikes/ai-newsletter-build</a> · Publish · <a href="https://github.com/DCMikes/ai-newsletter-publish">DCMikes/ai-newsletter-publish</a></div>
+</footer>
+
+</div>
+</body>
+</html>

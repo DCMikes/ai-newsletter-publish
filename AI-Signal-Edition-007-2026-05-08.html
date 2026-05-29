@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Signal — Edition 007 · May 8, 2026</title>
+<style>
+  :root {
+    /* Dark theme */
+    --ink: #e9e7df;
+    --ink-soft: #a6abba;
+    --bg: #0f1117;
+    --bg-card: #171a22;
+    --rule: #2a2f3b;
+    --accent: #d4a85a;
+    --signal-pure: #1f8f45;
+    --signal-grounded: #2f7fd0;
+    --signal-mixed: #b3801f;
+    --signal-speculative: #c25f33;
+    --signal-hearsay: #c93b3b;
+    --warn-bg: #2a2310;
+    --warn-rule: #d8a23e;
+    --note-bg: #142235;
+    --note-rule: #5a9be0;
+    --conflict-bg: #2c1517;
+    --conflict-rule: #e05a5a;
+    --tag-bg: #232734;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: Charter, 'Iowan Old Style', 'Source Serif Pro', Georgia, serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .frame { max-width: 760px; margin: 0 auto; padding: 48px 28px 96px; }
+  header.masthead { border-bottom: 2px solid var(--ink); padding-bottom: 24px; margin-bottom: 36px; }
+  .badge {
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  h1.title { font-size: 44px; line-height: 1.1; margin: 0 0 14px; letter-spacing: -0.01em; }
+  .title-meta { font-size: 14px; color: var(--ink-soft); font-style: italic; }
+  .title-meta .date { font-style: normal; font-weight: 600; color: var(--ink); }
+  .editor-note {
+    font-size: 18px; line-height: 1.6; color: var(--ink-soft);
+    border-left: 3px solid var(--accent); padding: 0 0 0 18px; margin: 0 0 56px;
+  }
+  .editor-note .closer {
+    display: block; margin-top: 14px;
+    font-family: 'JetBrains Mono', monospace; font-style: normal;
+    font-size: 13px; letter-spacing: 0.04em; color: var(--ink); text-transform: uppercase;
+  }
+  .story { margin-bottom: 60px; }
+  .story + .story { border-top: 1px solid var(--rule); padding-top: 56px; }
+  .story-num {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .story h2 { font-size: 28px; line-height: 1.2; margin: 0 0 14px; letter-spacing: -0.005em; }
+  .deck { font-size: 17px; line-height: 1.5; color: var(--ink-soft); margin: 0 0 22px; font-style: italic; }
+  .deck .followup {
+    display: inline-block; font-style: normal;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    background: var(--tag-bg); color: var(--accent);
+    padding: 2px 7px; border-radius: 3px; letter-spacing: 0.05em;
+    margin-right: 6px; vertical-align: 1px;
+  }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 22px; font-size: 13px; }
+  .signal {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', monospace; font-weight: 600;
+    padding: 4px 10px; border-radius: 3px; color: #fff;
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .signal[data-tier="pure"]        { background: var(--signal-pure); }
+  .signal[data-tier="grounded"]    { background: var(--signal-grounded); }
+  .signal[data-tier="mixed"]       { background: var(--signal-mixed); }
+  .signal[data-tier="speculative"] { background: var(--signal-speculative); }
+  .signal[data-tier="hearsay"]     { background: var(--signal-hearsay); }
+  .signal[data-tier="noise"]       { background: #39414f; color: #c7ccd8; }
+  .bars { font-family: 'JetBrains Mono', monospace; letter-spacing: -1px; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--tag-bg); color: var(--ink);
+    padding: 4px 10px; border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.03em;
+  }
+  .body p { margin: 0 0 18px; font-size: 17px; }
+  .callout {
+    border-left: 4px solid var(--note-rule); background: var(--note-bg);
+    padding: 14px 18px; margin: 22px 0; font-size: 15px; line-height: 1.5;
+  }
+  .callout[data-type="warning"]  { border-left-color: var(--warn-rule); background: var(--warn-bg); }
+  .callout[data-type="conflict"] { border-left-color: var(--conflict-rule); background: var(--conflict-bg); }
+  .callout-label {
+    display: block; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+    font-weight: 700; margin-bottom: 6px;
+  }
+  .callout[data-type="note"]     .callout-label { color: var(--note-rule); }
+  .callout[data-type="warning"]  .callout-label { color: var(--warn-rule); }
+  .callout[data-type="conflict"] .callout-label { color: var(--conflict-rule); }
+  .sources {
+    font-size: 13px; color: var(--ink-soft);
+    border-top: 1px dashed var(--rule); padding-top: 14px; margin-top: 18px;
+  }
+  .sources strong { color: var(--ink); font-weight: 600; }
+  section.watchlist { border-top: 2px solid var(--ink); padding-top: 36px; margin-top: 80px; }
+  section.watchlist h2 { font-size: 22px; margin: 0 0 18px; letter-spacing: -0.005em; }
+  table.watch { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.watch th, table.watch td {
+    text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--rule); vertical-align: top;
+  }
+  table.watch th {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-soft); border-bottom: 1px solid var(--ink);
+  }
+  .status { font-family: 'JetBrains Mono', monospace; font-size: 12px; white-space: nowrap; }
+  .priority {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    padding: 2px 8px; border-radius: 3px; background: var(--tag-bg); display: inline-block;
+  }
+  .priority[data-level="HIGH"]   { background: #3a1c1c; color: #f0a0a0; }
+  .priority[data-level="MEDIUM"] { background: #332a14; color: #e6c780; }
+  .priority[data-level="LOW"]    { background: var(--tag-bg); color: var(--ink-soft); }
+  footer.colophon {
+    margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--ink-soft); line-height: 1.7;
+  }
+  footer.colophon a { color: var(--accent); }
+  em { font-style: italic; }
+
+  /* Prev / current / next edition navigation */
+  .edition-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .edition-nav.top    { margin-bottom: 32px; padding-bottom: 18px; border-bottom: 1px solid var(--rule); }
+  .edition-nav.bottom { margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--rule); }
+  .nav-btn {
+    padding: 7px 14px; border: 1px solid var(--rule); border-radius: 6px;
+    color: var(--accent); text-decoration: none; white-space: nowrap;
+  }
+  a.nav-btn:hover { border-color: var(--accent); color: var(--ink); }
+  .nav-current  { color: var(--ink); border-color: transparent; letter-spacing: 0.1em; }
+  .nav-disabled { opacity: 0.32; }
+
+  /* Wide-screen two-pane layout (mobile-first: single column by default) */
+  .toc { display: none; }
+  .story { scroll-margin-top: 24px; }
+  @media (min-width: 1024px) {
+    .frame { max-width: 1240px; padding: 56px 56px 110px; }
+    h1.title { font-size: 52px; }
+    .editor-note { font-size: 19px; }
+    .layout {
+      display: grid; grid-template-columns: 230px minmax(0, 1fr);
+      column-gap: 60px; align-items: start;
+    }
+    .toc {
+      display: block; position: sticky; top: 40px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .toc-head {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--ink-soft); margin-bottom: 14px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .toc-list { list-style: none; margin: 0 0 18px; padding: 0; counter-reset: toc; }
+    .toc-list li { counter-increment: toc; margin-bottom: 12px; font-size: 13px; line-height: 1.35; }
+    .toc-list li::before { content: counter(toc, decimal-leading-zero); color: var(--accent); margin-right: 8px; }
+    .toc-list a { color: var(--ink-soft); text-decoration: none; }
+    .toc-list a:hover { color: var(--ink); }
+    .toc-watch {
+      display: inline-block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--accent); text-decoration: none; padding-top: 14px; border-top: 1px solid var(--rule);
+    }
+    .body p { max-width: 78ch; }
+  }
+  @media (min-width: 1440px) {
+    .frame { max-width: 1340px; }
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+
+<nav class="edition-nav top" aria-label="Edition navigation">
+  <a class="nav-btn" href="AI-Signal-Edition-006-2026-05-01.html">◄ Edition 006</a>
+  <a class="nav-btn nav-current" href="./">Current edition</a>
+  <a class="nav-btn" href="AI-Signal-Edition-008-2026-05-15.html">Edition 008 ►</a>
+</nav>
+
+<header class="masthead">
+  <div class="badge">📡 AI Signal · Edition 007</div>
+  <h1 class="title">Voice reasoning, pre-deployment vetting, and the AI layoff wave.</h1>
+  <div class="title-meta"><span class="date">May 8, 2026</span> · The Week in Signal</div>
+</header>
+
+<div class="layout">
+
+<aside class="toc" aria-label="In this edition">
+  <div class="toc-head">In this edition</div>
+  <ol class="toc-list">
+    <li><a href="#story-1">OpenAI Launches GPT-5.5 Instant and Realtime</a></li>
+    <li><a href="#story-2">U.S. Government Formalizes Pre-Deployment AI Safety</a></li>
+    <li><a href="#story-3">Cloudflare Cuts 20% of Workforce as</a></li>
+    <li><a href="#story-4">Anthropic and OpenAI Launch Competing Joint</a></li>
+    <li><a href="#story-5">EU Reaches Provisional Deal on AI</a></li>
+  </ol>
+  <a class="toc-watch" href="#watch">Watch List ↓</a>
+</aside>
+
+<main class="content">
+
+<p class="editor-note">
+This week the industry shifted from model capability to operational reality. OpenAI launched GPT-5.5 Instant and new voice models with GPT-5-class reasoning, pushing voice interfaces from simple call-and-response to actual work. The U.S. government formalized pre-deployment safety testing agreements with Google, Microsoft, and xAI, signaling a new era of oversight. Meanwhile, the economic impact of AI adoption became undeniable as Cloudflare cut 20% of its workforce, joining a growing list of tech companies restructuring around AI. Anthropic and OpenAI both launched joint ventures to aggressively target enterprise AI services, and the EU AI Act Omnibus reached a provisional deal to delay high-risk compliance deadlines.
+<span class="closer">Five stories. One spectrum. Let's get into it.</span>
+</p>
+
+<article class="story" id="story-1">
+  <div class="story-num">Story 01</div>
+  <h2>OpenAI Launches GPT-5.5 Instant and Realtime Voice Models with GPT-5-Class Reasoning</h2>
+  <p class="deck">OpenAI replaced GPT-5.3 Instant with GPT-5.5 Instant as the default ChatGPT model, prioritizing factual accuracy and reduced hallucinations. Simultaneously, it launched new Realtime API voice models capable of reasoning, translating, and transcribing as conversations unfold.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="grounded">Grounded <span class="bars">📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🔥 Hype Alert</span>
+    <span class="tag">🏢 Source Interest</span>
+  </div>
+  <div class="body">
+    <p>OpenAI released GPT-5.5 Instant this week, making it the new default model for ChatGPT users. The model achieved a score of 81.2 in the AIME 2025 math test (up from 65.4 for GPT-5.3 Instant) and outperformed its predecessor on the MMMU-Pro multimodal reasoning benchmark. The release emphasizes context management, allowing the model to use its search tool to refer back to past conversations, files, and Gmail for personalized answers. The company claims the model reduces hallucinations in sensitive areas like law, medicine, and finance while maintaining low latency.</p>
+    <p>In parallel, OpenAI introduced three new voice intelligence models to its Realtime API: GPT-Realtime-2, GPT-Realtime-Translate, and GPT-Realtime-Whisper. GPT-Realtime-2 is built with GPT-5-class reasoning, designed to handle complex requests and carry conversations forward naturally. The translation model supports over 70 input languages and 13 output languages in real-time, while the Whisper model provides live speech-to-text capabilities.</p>
+    <p>The dual release signals OpenAI's push to move AI interfaces from simple text or voice call-and-response toward agents that can actually do work — listen, reason, translate, transcribe, and take action. However, the performance claims remain vendor-sourced, and the real-world efficacy of the new voice reasoning capabilities will require independent developer validation.</p>
+  </div>
+  <aside class="callout" data-type="note">
+    <span class="callout-label">Note · Context management privacy</span>
+    OpenAI noted that while ChatGPT will now show memory sources across all models, if a user shares a chat with someone else, the recipient will not be able to see those memory sources — addressing a key privacy concern with persistent context.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> TechCrunch (May 5 &amp; 7, 2026), OpenAI Blog (May 5 &amp; 7, 2026)</div>
+</article>
+
+<article class="story" id="story-2">
+  <div class="story-num">Story 02</div>
+  <h2>U.S. Government Formalizes Pre-Deployment AI Safety Testing with Google, Microsoft, and xAI</h2>
+  <p class="deck">The Department of Commerce's Center for AI Standards and Innovation (CAISI) signed agreements with three major AI labs to evaluate frontier models before public release, marking a significant shift toward proactive government oversight.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="pure">Pure Signal <span class="bars">📶📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🏛️ Government / Regulatory</span>
+  </div>
+  <div class="body">
+    <p>The Center for AI Standards and Innovation (CAISI) at the National Institute of Standards and Technology (NIST) announced formal agreements with Google DeepMind, Microsoft, and xAI to conduct pre-deployment evaluations of frontier AI capabilities. The agreements allow government evaluators to test AI models before they are publicly available, as well as conduct post-deployment assessments.</p>
+    <p>CAISI Director Chris Fall stated that the agency has already completed more than 40 such evaluations, including on state-of-the-art models that remain unreleased. To thoroughly evaluate national security risks, developers frequently provide CAISI with models that have reduced or removed safeguards. The testing involves evaluators from across the government through the CAISI-convened TRAINS Taskforce.</p>
+    <p>The agreements represent a maturation of U.S. AI policy from voluntary commitments to structured, pre-release government vetting. While the testing remains collaborative rather than strictly regulatory, it establishes a formal mechanism for the government to assess dual-use capabilities — such as cyber and biological threats — before they reach the public domain.</p>
+  </div>
+  <aside class="callout" data-type="warning">
+    <span class="callout-label">Warning · Anthropic is notably absent</span>
+    While Google, Microsoft, and xAI signed the new CAISI agreements, Anthropic was not listed in the announcement. This absence is notable given Anthropic's ongoing lawsuit against the Pentagon over its 'supply chain risk' designation.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> NIST Press Release (May 5, 2026), Politico (May 5, 2026), Reuters (May 5, 2026)</div>
+</article>
+
+<article class="story" id="story-3">
+  <div class="story-num">Story 03</div>
+  <h2>Cloudflare Cuts 20% of Workforce as AI-Driven Tech Layoffs Accelerate</h2>
+  <p class="deck">Cloudflare announced it is laying off approximately 1,100 employees, citing restructuring around the rapid adoption of AI tools. The move is part of a broader wave of AI-linked job cuts across the tech sector in May 2026.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="grounded">Grounded <span class="bars">📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🕵️ Missing Context</span>
+  </div>
+  <div class="body">
+    <p>Cloudflare announced on May 7 that it is laying off roughly 20% of its global workforce — approximately 1,100 employees. The company explicitly cited the increased adoption of artificial intelligence tools and the need to restructure operations around AI as the primary driver for the cuts.</p>
+    <p>The Cloudflare reduction is part of a broader acceleration of tech layoffs in May 2026. Companies including Upwork and Coinbase have also announced significant workforce reductions this month. According to a recent survey by outplacement firm Challenger, Gray &amp; Christmas, AI was linked to 7% of total U.S. planned layoffs announced earlier this year, a figure that appears to be rising as companies operationalize AI productivity gains.</p>
+    <p>As noted in previous editions, the causal link between AI capabilities and specific layoffs is often complex. While AI tools are genuinely increasing productivity in areas like coding and customer support, companies are also using the 'AI restructuring' narrative as strategic cover for broader cost-cutting measures demanded by investors. Regardless of the exact ratio of cause to cover, the hollowing out of mid-level tech roles is accelerating.</p>
+  </div>
+  <aside class="callout" data-type="conflict">
+    <span class="callout-label">Conflict · The investor reaction</span>
+    Despite the aggressive cost-cutting narrative, investors were not entirely sold on Cloudflare's move — highlighting the tension between promising AI efficiency and demonstrating actual revenue growth from AI products.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> MarketWatch (May 7, 2026), Reuters (May 7, 2026), The Register (May 8, 2026)</div>
+</article>
+
+<article class="story" id="story-4">
+  <div class="story-num">Story 04</div>
+  <h2>Anthropic and OpenAI Launch Competing Joint Ventures to Capture Enterprise AI Market</h2>
+  <p class="deck">In a synchronized push for enterprise dominance, both Anthropic and OpenAI announced massive joint ventures with major asset managers and private equity firms to deploy custom AI solutions for mid-sized and large companies.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="grounded">Grounded <span class="bars">📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🏢 Source Interest</span>
+  </div>
+  <div class="body">
+    <p>Anthropic announced the formation of a new AI services company in partnership with Blackstone, Hellman &amp; Friedman, and Goldman Sachs. The venture, reportedly valued at $1.5 billion, aims to deploy applied AI engineers to work alongside customer teams to build custom Claude-powered solutions for mid-sized companies. The initiative is backed by a consortium including Apollo Global Management, General Atlantic, and Sequoia Capital.</p>
+    <p>Hours earlier, reports emerged that OpenAI is finalizing a similar, larger-scale initiative called The Development Company. OpenAI's venture is reportedly raising $4 billion against a $10 billion valuation from investors including TPG, Brookfield Asset Management, and Bain Capital.</p>
+    <p>The parallel announcements reveal a shift in the AI arms race: the bottleneck is no longer just model capability, but enterprise integration. Both labs are adopting a forward-deployed engineer model — similar to Palantir's approach — to overcome the friction of implementing AI in complex corporate workflows. By partnering with massive asset managers, Anthropic and OpenAI gain preferred sales access to those firms' extensive portfolios of portfolio companies.</p>
+  </div>
+  <aside class="callout" data-type="note">
+    <span class="callout-label">Note · The integration bottleneck</span>
+    The creation of these joint ventures acknowledges a hard truth in the AI industry: selling an API is easy, but fundamentally rewiring a company's operations to actually benefit from AI requires expensive, hands-on consulting and engineering work.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Anthropic Blog (May 4, 2026), TechCrunch (May 4, 2026), Wall Street Journal (May 4, 2026)</div>
+</article>
+
+<article class="story" id="story-5">
+  <div class="story-num">Story 05</div>
+  <h2>EU Reaches Provisional Deal on AI Act Omnibus, Delaying High-Risk Rules</h2>
+  <p class="deck"><span class="followup">🔄 Follow-Up</span> After talks collapsed last week, EU negotiators reached a provisional agreement to simplify the AI Act and delay compliance deadlines for high-risk AI systems until December 2027 and August 2028.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="pure">Pure Signal <span class="bars">📶📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🏛️ Government / Regulatory</span>
+  </div>
+  <div class="body">
+    <p>European Parliament and Council negotiators reached a provisional deal early Thursday morning on the AI Act Omnibus, rescuing the legislative package after trilogue talks collapsed the previous week. The agreement successfully delays the looming August 2026 compliance deadline for high-risk AI systems, which industry groups had warned was unworkable.</p>
+    <p>Under the new timeline, obligations for standalone high-risk AI systems — such as those used in biometrics, critical infrastructure, and law enforcement — will apply from December 2, 2027. For AI systems embedded as safety components in regulated products (like medical devices and machinery), the deadline is pushed to August 2, 2028. The deal also removes overlapping requirements for AI in machinery products, clarifying they only need to comply with sectoral safety rules.</p>
+    <p>The agreement includes a strict ban on "nudifier" apps — AI systems that create non-consensual intimate images or child sexual abuse material. Companies have until December 2, 2026, to bring their systems into compliance with this ban. The provisional agreement must still be formally adopted by both the Parliament and Council before entering into law.</p>
+    <p>## Watch List (Next Edition Pipeline)</p>
+    <p>| Topic | Status | Priority |</p>
+    <p>|-------|--------|----------|</p>
+    <p>| Anthropic IPO — Goldman/JPMorgan/Morgan Stanley lead underwriter selection and October 2026 timeline | ● Active | HIGH |</p>
+    <p>| DeepSeek V4 full weights release and independent benchmarks on Huawei hardware | ◐ Watch | HIGH |</p>
+    <p>| White House AI theft memo — concrete enforcement actions post Trump-Xi summit | ◐ Watch | HIGH |</p>
+    <p>| Anthropic Mythos breach — full scope of access and Anthropic's security response | ● Active | HIGH |</p>
+    <p>| FDA AI clinical trials pilot — public comment period outcomes and program expansion | ◐ Watch | MEDIUM |</p>
+    <p>| Anthropic Institute — early findings on economic diffusion and labor impacts | ◐ Watch | MEDIUM |</p>
+    <p>| OpenAI GPT-5.5 Voice Models — independent developer benchmarks and real-world latency | ? Verify | HIGH |</p>
+  </div>
+  <aside class="callout" data-type="note">
+    <span class="callout-label">Note · A win for industry deregulation</span>
+    The deal represents a significant victory for industry groups that lobbied heavily against overlapping regulations. By narrowing the definition of 'safety component' and deferring to existing sectoral rules for machinery, the EU has materially lightened the compliance burden for industrial AI applications.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> European Parliament Press Release (May 7, 2026), Reuters (May 7, 2026)</div>
+</article>
+
+<section class="watchlist" id="watch">
+  <h2>Watch List · Next Edition Pipeline</h2>
+  <table class="watch">
+    <thead>
+      <tr><th>Topic</th><th>Status</th><th>Priority</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Anthropic IPO — Goldman/JPMorgan/Morgan Stanley lead underwriter selection and October 2026 timeline</td>
+        <td class="status">● Active</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>DeepSeek V4 full weights release and independent benchmarks on Huawei hardware</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>White House AI theft memo — concrete enforcement actions post Trump-Xi summit</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>Anthropic Mythos breach — full scope of access and Anthropic's security response</td>
+        <td class="status">● Active</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>FDA AI clinical trials pilot — public comment period outcomes and program expansion</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="MEDIUM">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td>Anthropic Institute — early findings on economic diffusion and labor impacts</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="MEDIUM">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td>OpenAI GPT-5.5 Voice Models — independent developer benchmarks and real-world latency</td>
+        <td class="status">? Verify</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+</div>
+
+<nav class="edition-nav bottom" aria-label="Edition navigation">
+  <a class="nav-btn" href="AI-Signal-Edition-006-2026-05-01.html">◄ Edition 006</a>
+  <a class="nav-btn nav-current" href="./">Current edition</a>
+  <a class="nav-btn" href="AI-Signal-Edition-008-2026-05-15.html">Edition 008 ►</a>
+</nav>
+
+<footer class="colophon">
+  <div>AI Signal · Edition 007 · May 8, 2026</div>
+  <div>Content-equivalent companion to the canonical markdown edition <a href="AI-Signal-Edition-007-2026-05-08.md">AI-Signal-Edition-007-2026-05-08.md</a> — same five stories, same ratings, same callouts, same pipeline; long-form magazine rendering.</div>
+  <div>Build · <a href="https://github.com/DCMikes/ai-newsletter-build">DCMikes/ai-newsletter-build</a> · Publish · <a href="https://github.com/DCMikes/ai-newsletter-publish">DCMikes/ai-newsletter-publish</a></div>
+</footer>
+
+</div>
+</body>
+</html>

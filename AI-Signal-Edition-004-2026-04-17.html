@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Signal — Edition 004 · April 17, 2026</title>
+<style>
+  :root {
+    /* Dark theme */
+    --ink: #e9e7df;
+    --ink-soft: #a6abba;
+    --bg: #0f1117;
+    --bg-card: #171a22;
+    --rule: #2a2f3b;
+    --accent: #d4a85a;
+    --signal-pure: #1f8f45;
+    --signal-grounded: #2f7fd0;
+    --signal-mixed: #b3801f;
+    --signal-speculative: #c25f33;
+    --signal-hearsay: #c93b3b;
+    --warn-bg: #2a2310;
+    --warn-rule: #d8a23e;
+    --note-bg: #142235;
+    --note-rule: #5a9be0;
+    --conflict-bg: #2c1517;
+    --conflict-rule: #e05a5a;
+    --tag-bg: #232734;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: Charter, 'Iowan Old Style', 'Source Serif Pro', Georgia, serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .frame { max-width: 760px; margin: 0 auto; padding: 48px 28px 96px; }
+  header.masthead { border-bottom: 2px solid var(--ink); padding-bottom: 24px; margin-bottom: 36px; }
+  .badge {
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  h1.title { font-size: 44px; line-height: 1.1; margin: 0 0 14px; letter-spacing: -0.01em; }
+  .title-meta { font-size: 14px; color: var(--ink-soft); font-style: italic; }
+  .title-meta .date { font-style: normal; font-weight: 600; color: var(--ink); }
+  .editor-note {
+    font-size: 18px; line-height: 1.6; color: var(--ink-soft);
+    border-left: 3px solid var(--accent); padding: 0 0 0 18px; margin: 0 0 56px;
+  }
+  .editor-note .closer {
+    display: block; margin-top: 14px;
+    font-family: 'JetBrains Mono', monospace; font-style: normal;
+    font-size: 13px; letter-spacing: 0.04em; color: var(--ink); text-transform: uppercase;
+  }
+  .story { margin-bottom: 60px; }
+  .story + .story { border-top: 1px solid var(--rule); padding-top: 56px; }
+  .story-num {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .story h2 { font-size: 28px; line-height: 1.2; margin: 0 0 14px; letter-spacing: -0.005em; }
+  .deck { font-size: 17px; line-height: 1.5; color: var(--ink-soft); margin: 0 0 22px; font-style: italic; }
+  .deck .followup {
+    display: inline-block; font-style: normal;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    background: var(--tag-bg); color: var(--accent);
+    padding: 2px 7px; border-radius: 3px; letter-spacing: 0.05em;
+    margin-right: 6px; vertical-align: 1px;
+  }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 22px; font-size: 13px; }
+  .signal {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', monospace; font-weight: 600;
+    padding: 4px 10px; border-radius: 3px; color: #fff;
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .signal[data-tier="pure"]        { background: var(--signal-pure); }
+  .signal[data-tier="grounded"]    { background: var(--signal-grounded); }
+  .signal[data-tier="mixed"]       { background: var(--signal-mixed); }
+  .signal[data-tier="speculative"] { background: var(--signal-speculative); }
+  .signal[data-tier="hearsay"]     { background: var(--signal-hearsay); }
+  .signal[data-tier="noise"]       { background: #39414f; color: #c7ccd8; }
+  .bars { font-family: 'JetBrains Mono', monospace; letter-spacing: -1px; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--tag-bg); color: var(--ink);
+    padding: 4px 10px; border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.03em;
+  }
+  .body p { margin: 0 0 18px; font-size: 17px; }
+  .callout {
+    border-left: 4px solid var(--note-rule); background: var(--note-bg);
+    padding: 14px 18px; margin: 22px 0; font-size: 15px; line-height: 1.5;
+  }
+  .callout[data-type="warning"]  { border-left-color: var(--warn-rule); background: var(--warn-bg); }
+  .callout[data-type="conflict"] { border-left-color: var(--conflict-rule); background: var(--conflict-bg); }
+  .callout-label {
+    display: block; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+    font-weight: 700; margin-bottom: 6px;
+  }
+  .callout[data-type="note"]     .callout-label { color: var(--note-rule); }
+  .callout[data-type="warning"]  .callout-label { color: var(--warn-rule); }
+  .callout[data-type="conflict"] .callout-label { color: var(--conflict-rule); }
+  .sources {
+    font-size: 13px; color: var(--ink-soft);
+    border-top: 1px dashed var(--rule); padding-top: 14px; margin-top: 18px;
+  }
+  .sources strong { color: var(--ink); font-weight: 600; }
+  section.watchlist { border-top: 2px solid var(--ink); padding-top: 36px; margin-top: 80px; }
+  section.watchlist h2 { font-size: 22px; margin: 0 0 18px; letter-spacing: -0.005em; }
+  table.watch { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.watch th, table.watch td {
+    text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--rule); vertical-align: top;
+  }
+  table.watch th {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-soft); border-bottom: 1px solid var(--ink);
+  }
+  .status { font-family: 'JetBrains Mono', monospace; font-size: 12px; white-space: nowrap; }
+  .priority {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    padding: 2px 8px; border-radius: 3px; background: var(--tag-bg); display: inline-block;
+  }
+  .priority[data-level="HIGH"]   { background: #3a1c1c; color: #f0a0a0; }
+  .priority[data-level="MEDIUM"] { background: #332a14; color: #e6c780; }
+  .priority[data-level="LOW"]    { background: var(--tag-bg); color: var(--ink-soft); }
+  footer.colophon {
+    margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--ink-soft); line-height: 1.7;
+  }
+  footer.colophon a { color: var(--accent); }
+  em { font-style: italic; }
+
+  /* Prev / current / next edition navigation */
+  .edition-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .edition-nav.top    { margin-bottom: 32px; padding-bottom: 18px; border-bottom: 1px solid var(--rule); }
+  .edition-nav.bottom { margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--rule); }
+  .nav-btn {
+    padding: 7px 14px; border: 1px solid var(--rule); border-radius: 6px;
+    color: var(--accent); text-decoration: none; white-space: nowrap;
+  }
+  a.nav-btn:hover { border-color: var(--accent); color: var(--ink); }
+  .nav-current  { color: var(--ink); border-color: transparent; letter-spacing: 0.1em; }
+  .nav-disabled { opacity: 0.32; }
+
+  /* Wide-screen two-pane layout (mobile-first: single column by default) */
+  .toc { display: none; }
+  .story { scroll-margin-top: 24px; }
+  @media (min-width: 1024px) {
+    .frame { max-width: 1240px; padding: 56px 56px 110px; }
+    h1.title { font-size: 52px; }
+    .editor-note { font-size: 19px; }
+    .layout {
+      display: grid; grid-template-columns: 230px minmax(0, 1fr);
+      column-gap: 60px; align-items: start;
+    }
+    .toc {
+      display: block; position: sticky; top: 40px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .toc-head {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--ink-soft); margin-bottom: 14px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .toc-list { list-style: none; margin: 0 0 18px; padding: 0; counter-reset: toc; }
+    .toc-list li { counter-increment: toc; margin-bottom: 12px; font-size: 13px; line-height: 1.35; }
+    .toc-list li::before { content: counter(toc, decimal-leading-zero); color: var(--accent); margin-right: 8px; }
+    .toc-list a { color: var(--ink-soft); text-decoration: none; }
+    .toc-list a:hover { color: var(--ink); }
+    .toc-watch {
+      display: inline-block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--accent); text-decoration: none; padding-top: 14px; border-top: 1px solid var(--rule);
+    }
+    .body p { max-width: 78ch; }
+  }
+  @media (min-width: 1440px) {
+    .frame { max-width: 1340px; }
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+
+<nav class="edition-nav top" aria-label="Edition navigation">
+  <a class="nav-btn" href="AI-Signal-Edition-003-2026-04-10.html">◄ Edition 003</a>
+  <a class="nav-btn nav-current" href="./">Current edition</a>
+  <a class="nav-btn" href="AI-Signal-Edition-005-2026-04-24.html">Edition 005 ►</a>
+</nav>
+
+<header class="masthead">
+  <div class="badge">📡 AI Signal · Edition 004</div>
+  <h1 class="title">A policy framework in Washington. A rewrite in Colorado. Open weights from Google. In-house models from Microsoft. And ASML says the AI buildout is still outrunning supply.</h1>
+  <div class="title-meta"><span class="date">April 17, 2026</span> · The Week in Signal</div>
+</header>
+
+<div class="layout">
+
+<aside class="toc" aria-label="In this edition">
+  <div class="toc-head">In this edition</div>
+  <ol class="toc-list">
+    <li><a href="#story-1">ASML Says AI Chip Demand Is</a></li>
+    <li><a href="#story-2">The White House Published a National</a></li>
+    <li><a href="#story-3">Colorado Is Rewriting One of America's</a></li>
+    <li><a href="#story-4">Google Released Gemma 4 Under Apache</a></li>
+    <li><a href="#story-5">Microsoft Launches MAI</a></li>
+  </ol>
+  <a class="toc-watch" href="#watch">Watch List ↓</a>
+</aside>
+
+<main class="content">
+
+<p class="editor-note">
+Washington finally put a national AI legislative framework on paper. Colorado moved to rewrite one of the country's most closely watched state AI laws. Google released Gemma 4 under an Apache 2.0 license, while Microsoft pushed further into in-house foundation models with a new MAI family. And on the infrastructure side, ASML delivered the clearest primary-source signal yet that AI chip demand is still outrunning supply.
+<span class="closer">Five stories. One spectrum. Let's get into it.</span>
+</p>
+
+<article class="story" id="story-1">
+  <div class="story-num">Story 01</div>
+  <h2>ASML Says AI Chip Demand Is Still Outrunning Supply — and Raised Its 2026 Outlook</h2>
+  <p class="deck">The most important infrastructure signal this week did not come from a keynote. It came from ASML's earnings release, where the company raised guidance and said customers are accelerating expansion because AI chip demand still exceeds supply.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="grounded">Grounded <span class="bars">📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🏢 Source Interest</span>
+    <span class="tag">🕵️ Missing Context</span>
+  </div>
+  <div class="body">
+    <p>On April 15, 2026, ASML reported first-quarter net sales of €8.8 billion and net income of €2.8 billion, then raised its full-year 2026 sales outlook to €36 billion–€40 billion. The headline numbers matter, but the more consequential signal was management's explanation: ongoing AI-related infrastructure investment is solidifying semiconductor growth, customer demand for chips is outpacing supply, and chipmakers are accelerating capacity expansion plans for 2026 and beyond.</p>
+    <p>This is unusually high-value evidence because ASML sits upstream from almost the entire advanced-chip ecosystem. If NVIDIA, TSMC, Samsung, Intel, and their suppliers expect AI demand to soften, ASML should see it in tool orders and deferred expansion plans. Instead, CEO Christophe Fouquet said the company's order intake remains very strong and that customers have increased both short- and medium-term demand expectations in recent months.</p>
+    <p>The caution is that ASML is not a neutral observer. It is a vendor with a direct commercial interest in portraying AI infrastructure demand as durable, and its guidance still explicitly leaves room for different outcomes depending on export-control discussions.</p>
+  </div>
+  <aside class="callout" data-type="note">
+    <span class="callout-label">Note · Why this matters</span>
+    ASML is upstream infrastructure. It does not just sell into one model lab or one app category; it sells into the equipment chain that determines how much advanced chip capacity can exist at all. That makes its guidance unusually useful as a reality check on AI demand.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> ASML press release (April 15, 2026), ASML management outlook statement (April 15, 2026), Reuters market coverage (April 15–16, 2026)</div>
+</article>
+
+<article class="story" id="story-2">
+  <div class="story-num">Story 02</div>
+  <h2>The White House Published a National AI Legislative Framework. It's Pro-Infrastructure, Pro-Preemption, and Not Yet Law.</h2>
+  <p class="deck">After months of broad rhetoric, the administration released a concrete AI policy framework covering child safety, infrastructure, IP, free speech, workforce policy, and federal primacy over a patchwork of state rules.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="grounded">Grounded <span class="bars">📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🏛️ Government / Regulatory</span>
+    <span class="tag">🕵️ Missing Context</span>
+  </div>
+  <div class="body">
+    <p>On March 20, 2026, the White House released a National Policy Framework for Artificial Intelligence and an accompanying public statement laying out six legislative priorities: protecting children, safeguarding communities, respecting intellectual property, preventing censorship, enabling innovation, and building an AI-ready workforce. The framework also takes a clear position on federal-state power: the administration argues that a fragmented patchwork of state AI laws would undermine U.S. competitiveness and should be preempted by a uniform national approach.</p>
+    <p>The infrastructure language is especially revealing. The framework says Congress should ensure residential ratepayers do not bear the cost of AI data center buildout, while also streamlining federal permitting so AI developers can add or procure on-site and behind-the-meter power generation.</p>
+    <p>What this document does not do is create law. It is a legislative recommendation package, not enacted policy, and several of its most consequential ideas — especially around preemption, speech, and copyright balance — will face opposition from states, creators, civil-liberties groups, and parts of industry.</p>
+  </div>
+  <aside class="callout" data-type="warning">
+    <span class="callout-label">Warning · Framework, not statute</span>
+    This is a policy blueprint, not an enacted bill. Treat it as a statement of federal intent and negotiating position, not as a set of operative legal requirements.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> White House release (March 20, 2026), National Policy Framework for Artificial Intelligence PDF (March 2026), follow-on legal analysis from DLA Piper and Holland &amp; Knight (March 2026)</div>
+</article>
+
+<article class="story" id="story-3">
+  <div class="story-num">Story 03</div>
+  <h2>Colorado Is Rewriting One of America's First AI Laws Before It Fully Takes Effect</h2>
+  <p class="deck">The state working group charged with repairing Colorado's controversial AI Act has proposed clearer disclosure rules and role-based liability — a sign that even early AI laws are being rewritten in real time.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="mixed">Mixed <span class="bars">📶📶📶</span></span>
+    <span class="tag">🏛️ Government / Regulatory</span>
+    <span class="tag">⚖️ Source Conflict</span>
+    <span class="tag">🕵️ Missing Context</span>
+  </div>
+  <div class="body">
+    <p>Colorado lawmakers are moving toward a rewrite of the state's 2024 AI law after a policy working group released a new framework aimed at defusing months of conflict between consumer advocates and the technology industry. The proposed changes include clearer disclosure requirements for high-risk AI systems, role-based liability that distinguishes between developers and deployers, and a revised definition of "high-risk" that narrows the law's scope.</p>
+    <p>The Colorado AI Act was one of the first comprehensive state AI laws in the country, and its implementation has been contentious. Technology companies argued the original law was too broad and would create compliance burdens that effectively banned AI deployment in the state. Consumer advocates argued the proposed rewrites weaken protections.</p>
+    <p>The final bill text is not yet settled. The working group's framework is a proposal, not enacted law. The enforcement timeline and liability provisions remain in flux.</p>
+  </div>
+  <aside class="callout" data-type="warning">
+    <span class="callout-label">Warning · Draft framework, not final law</span>
+    The Colorado working group's proposals are a draft framework, not enacted legislation. The final bill text, enforcement mechanisms, and effective date remain unsettled.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Colorado legislature working group report (April 2026), StateScoop (April 2026), TechCrunch (April 2026)</div>
+</article>
+
+<article class="story" id="story-4">
+  <div class="story-num">Story 04</div>
+  <h2>Google Released Gemma 4 Under Apache 2.0 — The Open-Weights Race Has a New Entry</h2>
+  <p class="deck">Google released Gemma 4 under an Apache 2.0 license, making it one of the most permissively licensed capable open-weights models available. The benchmark claims are strong. Independent evaluation is pending.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="mixed">Mixed <span class="bars">📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🔥 Hype Alert</span>
+    <span class="tag">🏢 Source Interest</span>
+  </div>
+  <div class="body">
+    <p>Google released Gemma 4 this week under an Apache 2.0 license — one of the most permissive open-source licenses available, allowing commercial use without restriction. The model is available in multiple sizes and is designed to run efficiently on consumer hardware, making it accessible to developers and researchers without enterprise GPU budgets.</p>
+    <p>Google's benchmark claims for Gemma 4 are competitive with models several times its size. The company says it outperforms comparable open-weights models on reasoning, coding, and instruction-following benchmarks. Independent evaluation on Hugging Face and LMSYS-style arenas is underway but not yet complete.</p>
+    <p>The Apache 2.0 licensing is genuinely significant. Most capable open-weights models ship with custom licenses that restrict commercial use or require attribution in ways that complicate enterprise deployment. Gemma 4's licensing removes those barriers.</p>
+  </div>
+  <aside class="callout" data-type="note">
+    <span class="callout-label">Note · Apache 2.0 matters</span>
+    The Apache 2.0 license is the most commercially permissive option Google could have chosen. It removes the licensing friction that has complicated enterprise adoption of other open-weights models.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Google DeepMind Blog (April 2026), Hugging Face model card (April 2026), Google Developers Blog (April 2026)</div>
+</article>
+
+<article class="story" id="story-5">
+  <div class="story-num">Story 05</div>
+  <h2>Microsoft Launches MAI: In-House Foundation Models for Transcription, Voice, and Image Tasks</h2>
+  <p class="deck">Microsoft released a new family of in-house AI models under the MAI brand, covering transcription, voice synthesis, and image understanding. The releases signal Microsoft's push to reduce dependence on third-party model providers for specific workloads.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="mixed">Mixed <span class="bars">📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🔥 Hype Alert</span>
+    <span class="tag">🏢 Source Interest</span>
+  </div>
+  <div class="body">
+    <p>Microsoft released the MAI model family this week, covering three modalities: transcription (MAI-Speech), voice synthesis (MAI-Voice), and image understanding (MAI-Vision). The models are available through Azure AI Services and are being integrated into Microsoft 365 Copilot for specific task types.</p>
+    <p>The strategic logic is clear: Microsoft currently relies on OpenAI for its most capable language models and on third-party providers for specialized modalities. The MAI family represents an effort to develop in-house capabilities for workloads where Microsoft can achieve competitive performance without the cost and dependency of third-party APIs.</p>
+    <p>The performance claims are vendor-sourced. Microsoft says MAI-Speech achieves state-of-the-art transcription accuracy on several benchmarks. Independent testing by enterprise users and third-party evaluators is pending.</p>
+    <p>## Watch List (Next Edition Pipeline)</p>
+    <p>| Topic | Status | Priority |</p>
+    <p>|-------|--------|----------|</p>
+    <p>| ASML outlook — do TSMC, Samsung, and Intel confirm the same demand picture? | ● Active | HIGH |</p>
+    <p>| White House AI framework — watch for actual bill text and federal preemption language | ● Active | HIGH |</p>
+    <p>| Colorado AI rewrite — track draft bill text, enforcement timing, and liability changes | ◐ Watch | HIGH |</p>
+    <p>| Gemma 4 — independent benchmarks and enterprise adoption | ? Verify | MEDIUM |</p>
+    <p>| Microsoft MAI models — third-party testing and expansion across Copilot/Azure | ◐ Watch | MEDIUM |</p>
+    <p>| Federal vs. state AI regulation collisions | ◎ Under-reported | HIGH |</p>
+    <p>| AI infrastructure power politics — ratepayer protections, on-site generation, local backlash | ◐ Watch | MEDIUM |</p>
+  </div>
+  <aside class="callout" data-type="warning">
+    <span class="callout-label">Warning · Vendor benchmarks only</span>
+    All MAI performance claims are from Microsoft's own evaluation. Independent benchmarking by third parties has not yet been published. Treat the performance claims as preliminary until external validation exists.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Microsoft Blog (April 2026), Azure AI Services documentation (April 2026), TechCrunch (April 2026)</div>
+</article>
+
+<section class="watchlist" id="watch">
+  <h2>Watch List · Next Edition Pipeline</h2>
+  <table class="watch">
+    <thead>
+      <tr><th>Topic</th><th>Status</th><th>Priority</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>ASML outlook — do TSMC, Samsung, and Intel confirm the same demand picture?</td>
+        <td class="status">● Active</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>White House AI framework — watch for actual bill text and federal preemption language</td>
+        <td class="status">● Active</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>Colorado AI rewrite — track draft bill text, enforcement timing, and liability changes</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>Gemma 4 — independent benchmarks and enterprise adoption</td>
+        <td class="status">? Verify</td>
+        <td><span class="priority" data-level="MEDIUM">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td>Microsoft MAI models — third-party testing and expansion across Copilot/Azure</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="MEDIUM">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td>Federal vs. state AI regulation collisions</td>
+        <td class="status">◎ Under-reported</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>AI infrastructure power politics — ratepayer protections, on-site generation, local backlash</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="MEDIUM">MEDIUM</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+</div>
+
+<nav class="edition-nav bottom" aria-label="Edition navigation">
+  <a class="nav-btn" href="AI-Signal-Edition-003-2026-04-10.html">◄ Edition 003</a>
+  <a class="nav-btn nav-current" href="./">Current edition</a>
+  <a class="nav-btn" href="AI-Signal-Edition-005-2026-04-24.html">Edition 005 ►</a>
+</nav>
+
+<footer class="colophon">
+  <div>AI Signal · Edition 004 · April 17, 2026</div>
+  <div>Content-equivalent companion to the canonical markdown edition <a href="AI-Signal-Edition-004-2026-04-17.md">AI-Signal-Edition-004-2026-04-17.md</a> — same five stories, same ratings, same callouts, same pipeline; long-form magazine rendering.</div>
+  <div>Build · <a href="https://github.com/DCMikes/ai-newsletter-build">DCMikes/ai-newsletter-build</a> · Publish · <a href="https://github.com/DCMikes/ai-newsletter-publish">DCMikes/ai-newsletter-publish</a></div>
+</footer>
+
+</div>
+</body>
+</html>

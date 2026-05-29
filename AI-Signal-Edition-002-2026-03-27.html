@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Signal — Edition 002 · March 27, 2026</title>
+<style>
+  :root {
+    /* Dark theme */
+    --ink: #e9e7df;
+    --ink-soft: #a6abba;
+    --bg: #0f1117;
+    --bg-card: #171a22;
+    --rule: #2a2f3b;
+    --accent: #d4a85a;
+    --signal-pure: #1f8f45;
+    --signal-grounded: #2f7fd0;
+    --signal-mixed: #b3801f;
+    --signal-speculative: #c25f33;
+    --signal-hearsay: #c93b3b;
+    --warn-bg: #2a2310;
+    --warn-rule: #d8a23e;
+    --note-bg: #142235;
+    --note-rule: #5a9be0;
+    --conflict-bg: #2c1517;
+    --conflict-rule: #e05a5a;
+    --tag-bg: #232734;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: Charter, 'Iowan Old Style', 'Source Serif Pro', Georgia, serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .frame { max-width: 760px; margin: 0 auto; padding: 48px 28px 96px; }
+  header.masthead { border-bottom: 2px solid var(--ink); padding-bottom: 24px; margin-bottom: 36px; }
+  .badge {
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  h1.title { font-size: 44px; line-height: 1.1; margin: 0 0 14px; letter-spacing: -0.01em; }
+  .title-meta { font-size: 14px; color: var(--ink-soft); font-style: italic; }
+  .title-meta .date { font-style: normal; font-weight: 600; color: var(--ink); }
+  .editor-note {
+    font-size: 18px; line-height: 1.6; color: var(--ink-soft);
+    border-left: 3px solid var(--accent); padding: 0 0 0 18px; margin: 0 0 56px;
+  }
+  .editor-note .closer {
+    display: block; margin-top: 14px;
+    font-family: 'JetBrains Mono', monospace; font-style: normal;
+    font-size: 13px; letter-spacing: 0.04em; color: var(--ink); text-transform: uppercase;
+  }
+  .story { margin-bottom: 60px; }
+  .story + .story { border-top: 1px solid var(--rule); padding-top: 56px; }
+  .story-num {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .story h2 { font-size: 28px; line-height: 1.2; margin: 0 0 14px; letter-spacing: -0.005em; }
+  .deck { font-size: 17px; line-height: 1.5; color: var(--ink-soft); margin: 0 0 22px; font-style: italic; }
+  .deck .followup {
+    display: inline-block; font-style: normal;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    background: var(--tag-bg); color: var(--accent);
+    padding: 2px 7px; border-radius: 3px; letter-spacing: 0.05em;
+    margin-right: 6px; vertical-align: 1px;
+  }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 22px; font-size: 13px; }
+  .signal {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', monospace; font-weight: 600;
+    padding: 4px 10px; border-radius: 3px; color: #fff;
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .signal[data-tier="pure"]        { background: var(--signal-pure); }
+  .signal[data-tier="grounded"]    { background: var(--signal-grounded); }
+  .signal[data-tier="mixed"]       { background: var(--signal-mixed); }
+  .signal[data-tier="speculative"] { background: var(--signal-speculative); }
+  .signal[data-tier="hearsay"]     { background: var(--signal-hearsay); }
+  .signal[data-tier="noise"]       { background: #39414f; color: #c7ccd8; }
+  .bars { font-family: 'JetBrains Mono', monospace; letter-spacing: -1px; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--tag-bg); color: var(--ink);
+    padding: 4px 10px; border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.03em;
+  }
+  .body p { margin: 0 0 18px; font-size: 17px; }
+  .callout {
+    border-left: 4px solid var(--note-rule); background: var(--note-bg);
+    padding: 14px 18px; margin: 22px 0; font-size: 15px; line-height: 1.5;
+  }
+  .callout[data-type="warning"]  { border-left-color: var(--warn-rule); background: var(--warn-bg); }
+  .callout[data-type="conflict"] { border-left-color: var(--conflict-rule); background: var(--conflict-bg); }
+  .callout-label {
+    display: block; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+    font-weight: 700; margin-bottom: 6px;
+  }
+  .callout[data-type="note"]     .callout-label { color: var(--note-rule); }
+  .callout[data-type="warning"]  .callout-label { color: var(--warn-rule); }
+  .callout[data-type="conflict"] .callout-label { color: var(--conflict-rule); }
+  .sources {
+    font-size: 13px; color: var(--ink-soft);
+    border-top: 1px dashed var(--rule); padding-top: 14px; margin-top: 18px;
+  }
+  .sources strong { color: var(--ink); font-weight: 600; }
+  section.watchlist { border-top: 2px solid var(--ink); padding-top: 36px; margin-top: 80px; }
+  section.watchlist h2 { font-size: 22px; margin: 0 0 18px; letter-spacing: -0.005em; }
+  table.watch { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.watch th, table.watch td {
+    text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--rule); vertical-align: top;
+  }
+  table.watch th {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-soft); border-bottom: 1px solid var(--ink);
+  }
+  .status { font-family: 'JetBrains Mono', monospace; font-size: 12px; white-space: nowrap; }
+  .priority {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    padding: 2px 8px; border-radius: 3px; background: var(--tag-bg); display: inline-block;
+  }
+  .priority[data-level="HIGH"]   { background: #3a1c1c; color: #f0a0a0; }
+  .priority[data-level="MEDIUM"] { background: #332a14; color: #e6c780; }
+  .priority[data-level="LOW"]    { background: var(--tag-bg); color: var(--ink-soft); }
+  footer.colophon {
+    margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--ink-soft); line-height: 1.7;
+  }
+  footer.colophon a { color: var(--accent); }
+  em { font-style: italic; }
+
+  /* Prev / current / next edition navigation */
+  .edition-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .edition-nav.top    { margin-bottom: 32px; padding-bottom: 18px; border-bottom: 1px solid var(--rule); }
+  .edition-nav.bottom { margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--rule); }
+  .nav-btn {
+    padding: 7px 14px; border: 1px solid var(--rule); border-radius: 6px;
+    color: var(--accent); text-decoration: none; white-space: nowrap;
+  }
+  a.nav-btn:hover { border-color: var(--accent); color: var(--ink); }
+  .nav-current  { color: var(--ink); border-color: transparent; letter-spacing: 0.1em; }
+  .nav-disabled { opacity: 0.32; }
+
+  /* Wide-screen two-pane layout (mobile-first: single column by default) */
+  .toc { display: none; }
+  .story { scroll-margin-top: 24px; }
+  @media (min-width: 1024px) {
+    .frame { max-width: 1240px; padding: 56px 56px 110px; }
+    h1.title { font-size: 52px; }
+    .editor-note { font-size: 19px; }
+    .layout {
+      display: grid; grid-template-columns: 230px minmax(0, 1fr);
+      column-gap: 60px; align-items: start;
+    }
+    .toc {
+      display: block; position: sticky; top: 40px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .toc-head {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--ink-soft); margin-bottom: 14px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .toc-list { list-style: none; margin: 0 0 18px; padding: 0; counter-reset: toc; }
+    .toc-list li { counter-increment: toc; margin-bottom: 12px; font-size: 13px; line-height: 1.35; }
+    .toc-list li::before { content: counter(toc, decimal-leading-zero); color: var(--accent); margin-right: 8px; }
+    .toc-list a { color: var(--ink-soft); text-decoration: none; }
+    .toc-list a:hover { color: var(--ink); }
+    .toc-watch {
+      display: inline-block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--accent); text-decoration: none; padding-top: 14px; border-top: 1px solid var(--rule);
+    }
+    .body p { max-width: 78ch; }
+  }
+  @media (min-width: 1440px) {
+    .frame { max-width: 1340px; }
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+
+<nav class="edition-nav top" aria-label="Edition navigation">
+  <a class="nav-btn" href="AI-Signal-Edition-001-2026-03-13.html">◄ Edition 001</a>
+  <a class="nav-btn nav-current" href="./">Current edition</a>
+  <a class="nav-btn" href="AI-Signal-Edition-003-2026-04-10.html">Edition 003 ►</a>
+</nav>
+
+<header class="masthead">
+  <div class="badge">📡 AI Signal · Edition 002</div>
+  <h1 class="title">GTC delivered. ByteDance got caught. Anthropic got studied. Morgan Stanley got excited.</h1>
+  <div class="title-meta"><span class="date">March 27, 2026</span> · The Week in Signal</div>
+</header>
+
+<div class="layout">
+
+<aside class="toc" aria-label="In this edition">
+  <div class="toc-head">In this edition</div>
+  <ol class="toc-list">
+    <li><a href="#story-1">The Industry Unites Behind Anthropic</a></li>
+    <li><a href="#story-2">GTC 2026</a></li>
+    <li><a href="#story-3">ByteDance Acquired 36,000 Blackwell GPUs Through</a></li>
+    <li><a href="#story-4">Anthropic's Labor Study Measured Exposure, Not</a></li>
+    <li><a href="#story-5">Morgan Stanley's "Intelligence Explosion" Report</a></li>
+  </ol>
+  <a class="toc-watch" href="#watch">Watch List ↓</a>
+</aside>
+
+<main class="content">
+
+<p class="editor-note">
+NVIDIA's GTC keynote landed, and Jensen Huang did not disappoint — or disappoint in the ways that matter. ByteDance found a way to buy 36,000 Blackwell GPUs through Malaysia. Anthropic published a labor study that measured exposure, not outcomes, and the distinction matters enormously. And Morgan Stanley released a report projecting an "intelligence explosion" that reads more like a pitch deck than analysis.
+<span class="closer">Five stories. One spectrum. Let's get into it.</span>
+</p>
+
+<article class="story" id="story-1">
+  <div class="story-num">Story 01</div>
+  <h2>The Industry Unites Behind Anthropic — Microsoft Files Amicus Brief</h2>
+  <p class="deck"><span class="followup">🔄 Follow-Up</span> Microsoft filed an amicus brief supporting Anthropic's Pentagon lawsuit. The brief is significant not just for its content but for what it signals about where the enterprise AI industry stands on government overreach.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="grounded">Grounded <span class="bars">📶📶📶📶</span></span>
+    <span class="tag">⚖️ Source Conflict</span>
+    <span class="tag">🕵️ Missing Context</span>
+    <span class="tag">✅ Confirmed</span>
+  </div>
+  <div class="body">
+    <p>Microsoft filed an amicus brief this week in Anthropic's federal lawsuit against the Department of Defense, arguing that the Pentagon's "supply chain risk" designation process lacks adequate procedural safeguards and could chill AI innovation across the industry. The brief was confirmed by Reuters and The Hill, both citing the court filing directly.</p>
+    <p>The Microsoft brief is notable for two reasons. First, Microsoft is OpenAI's primary commercial partner — a company with its own deep DoD relationships and significant interest in the outcome of this case. Its decision to file in support of a competitor signals that the industry views the procedural question as more important than the competitive dynamics. Second, the brief focuses on process, not substance: Microsoft is not arguing that Anthropic's safety policies are correct, but that the government cannot blacklist a company without disclosing the basis for its determination.</p>
+    <p>The broader coalition forming around this case is worth watching. If the court rules that the DoD must disclose its technical rationale for supply chain risk designations, that precedent would apply to every AI company with federal contracts.</p>
+  </div>
+  <aside class="callout" data-type="note">
+    <span class="callout-label">Note · Confirmed by court filing</span>
+    The Microsoft amicus brief is a public court document, independently confirmed by Reuters and The Hill. This is one of the cleaner factual anchors in the ongoing Anthropic-Pentagon story.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Reuters (March 24, 2026), The Hill (March 24, 2026), PACER court filing</div>
+</article>
+
+<article class="story" id="story-2">
+  <div class="story-num">Story 02</div>
+  <h2>GTC 2026: Vera Rubin Debuts, NemoClaw Rumored, and Jensen Huang Measures Everything in Gigawatts</h2>
+  <p class="deck">NVIDIA's GTC keynote confirmed the Vera Rubin architecture, teased NemoClaw for agentic workloads, and framed AI infrastructure as a multi-gigawatt national buildout. What shipped, what's roadmap, and what's still rumor.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="mixed">Mixed <span class="bars">📶📶📶</span></span>
+    <span class="tag">🔥 Hype Alert</span>
+    <span class="tag">🕵️ Missing Context</span>
+    <span class="tag">🏢 Source Interest</span>
+  </div>
+  <div class="body">
+    <p>Jensen Huang's GTC 2026 keynote confirmed the Vera Rubin GPU architecture as NVIDIA's next-generation platform, succeeding Blackwell. Vera Rubin is designed for inference at scale — the computational workload that dominates AI deployment costs — and Huang framed it as the foundation for what he called "AI factories": purpose-built data centers measured in gigawatts rather than megawatts.</p>
+    <p>NemoClaw, a specialized processor for agentic AI workloads, was referenced in keynote materials and confirmed by multiple attendees, but NVIDIA did not release formal specifications or a ship date. The processor is designed to handle the orchestration overhead of multi-agent systems — a workload that current GPU architectures handle inefficiently.</p>
+    <p>The signal discipline required here: GTC is NVIDIA's own conference. Every performance claim, every timeline, and every market projection in the keynote is vendor-sourced. Vera Rubin's confirmed architecture is real. The gigawatt buildout projections are NVIDIA's own modeling. NemoClaw's capabilities remain unverified until independent benchmarks exist.</p>
+  </div>
+  <aside class="callout" data-type="warning">
+    <span class="callout-label">Warning · Roadmap vs. reality</span>
+    NVIDIA announced Vera Rubin at GTC 2025 and confirmed it at GTC 2026. Customer delivery timelines have not been independently confirmed. Treat all GTC roadmap announcements as aspirational until third-party confirmation.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> NVIDIA GTC keynote (March 17, 2026), The Verge (March 17, 2026), Ars Technica (March 18, 2026)</div>
+</article>
+
+<article class="story" id="story-3">
+  <div class="story-num">Story 03</div>
+  <h2>ByteDance Acquired 36,000 Blackwell GPUs Through Malaysia — NVIDIA Confirmed It</h2>
+  <p class="deck">ByteDance routed a massive Blackwell GPU purchase through Malaysian intermediaries, circumventing U.S. controls. NVIDIA confirmed the arrangement on the record. The implications for the chip war are significant.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="pure">Pure Signal <span class="bars">📶📶📶📶📶</span></span>
+    <span class="tag">✅ Confirmed</span>
+    <span class="tag">🏛️ Government / Regulatory</span>
+    <span class="tag">🕵️ Missing Context</span>
+  </div>
+  <div class="body">
+    <p>ByteDance acquired approximately 36,000 NVIDIA Blackwell GPUs through a Malaysian data center operator, routing the purchase in a way that avoided direct control scrutiny. NVIDIA confirmed the arrangement in an on-record statement, acknowledging that the chips were sold to a Malaysian entity that subsequently made them available to ByteDance for workloads run in Malaysia.</p>
+    <p>The technical compliance argument is straightforward: the chips were sold to a Malaysian company, not to a Chinese entity, and Malaysia is not subject to the same restrictions as China. The policy argument is equally straightforward: the compute is being used by a Chinese company for AI workloads, which is precisely what the controls were designed to prevent.</p>
+    <p>This is one of the cleaner factual stories of the week because NVIDIA confirmed it directly. The policy implications — whether the Commerce Department will close the Malaysian routing loophole, whether NVIDIA faces liability, and whether this triggers broader allied-country restrictions — are genuinely uncertain and worth watching.</p>
+  </div>
+  <aside class="callout" data-type="note">
+    <span class="callout-label">Note · On-record confirmation</span>
+    NVIDIA's on-record confirmation of the Malaysia arrangement makes this one of the best-sourced stories in recent AI industry coverage. The facts are clear; the policy response is not.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> NVIDIA on-record statement (March 2026), Reuters (March 2026), Financial Times (March 2026)</div>
+</article>
+
+<article class="story" id="story-4">
+  <div class="story-num">Story 04</div>
+  <h2>Anthropic's Labor Study Measured Exposure, Not Job Loss — The Distinction Matters</h2>
+  <p class="deck">Anthropic published a study on AI's impact on labor markets. Headlines called it a jobs report. It isn't. It measures task exposure — a very different thing — and the gap between the two is where most of the hype lives.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="grounded">Grounded <span class="bars">📶📶📶📶</span></span>
+    <span class="tag">🎓 Peer-Reviewed</span>
+    <span class="tag">🏢 Source Interest</span>
+    <span class="tag">⚖️ Source Conflict</span>
+  </div>
+  <div class="body">
+    <p>Anthropic published a labor market study this week examining which occupational tasks are most exposed to AI automation based on Claude's actual usage patterns. The study found that software development, data analysis, writing, and research tasks show the highest exposure rates — meaning AI tools are being used for these tasks at scale.</p>
+    <p>The critical distinction that most coverage missed: task exposure is not job displacement. A job consists of many tasks. AI automating some tasks in a role does not automatically eliminate the role — it changes it. The study measures what AI is being used for, not what jobs it is eliminating. Forbes published a critique of the study's methodology that is worth reading alongside the original.</p>
+    <p>The source-interest flag is appropriate here: Anthropic has a commercial interest in demonstrating that its models are widely used for high-value work. The study's findings are consistent with that interest. That does not make the findings wrong, but it is a reason to read the methodology carefully.</p>
+  </div>
+  <aside class="callout" data-type="conflict">
+    <span class="callout-label">Conflict · Exposure ≠ displacement</span>
+    The Forbes critique correctly identifies that the study measures task exposure, not employment outcomes. The two are related but not equivalent. Treat headlines claiming this study proves AI is eliminating jobs as overreach.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Anthropic research paper (March 2026), Forbes critique (March 2026)</div>
+</article>
+
+<article class="story" id="story-5">
+  <div class="story-num">Story 05</div>
+  <h2>Morgan Stanley's "Intelligence Explosion" Report: Infrastructure Analysis Dressed Up as Prophecy</h2>
+  <p class="deck">Morgan Stanley published a report projecting an "intelligence explosion" driven by AI. The power grid analysis is independently supportable. The AI capability framing is promotional. Know which is which.</p>
+  <div class="meta-row">
+    <span class="signal" data-tier="speculative">Speculative <span class="bars">📶📶</span></span>
+    <span class="tag">🔥 Hype Alert</span>
+    <span class="tag">🏢 Source Interest</span>
+  </div>
+  <div class="body">
+    <p>Morgan Stanley published a research report this week projecting that AI will trigger an "intelligence explosion" — a rapid, self-reinforcing cycle of capability improvement — within the next several years. The report has been widely cited in AI coverage as institutional validation of transformative AI timelines.</p>
+    <p>The report contains two distinct types of claims that deserve different treatment. The infrastructure analysis — projecting AI data center power demand, grid investment requirements, and utility sector implications — is grounded in observable capital expenditure trends and is independently supportable from public filings. The AI capability projections — the intelligence explosion framing, the timeline claims, the transformative outcome scenarios — are speculative extrapolations that reflect the authors' priors more than verifiable evidence.</p>
+    <p>Morgan Stanley is an investment bank with clients in the AI infrastructure space. Reports projecting massive AI-driven demand for power infrastructure are consistent with the investment thesis of those clients. That does not make the infrastructure analysis wrong, but it is a reason to separate the data from the narrative.</p>
+    <p>## Watch List (Next Edition Pipeline)</p>
+    <p>| Topic | Status | Priority |</p>
+    <p>|-------|--------|----------|</p>
+    <p>| Anthropic Pentagon lawsuit — court hearing &amp; DoD response | ● Active | HIGH |</p>
+    <p>| ByteDance Malaysia routing — Commerce Department response | ● Active | HIGH |</p>
+    <p>| Vera Rubin — customer delivery confirmation | ◐ Watch | HIGH |</p>
+    <p>| Meta Llama 4 — release timeline | ◐ Watch | MEDIUM |</p>
+  </div>
+  <aside class="callout" data-type="warning">
+    <span class="callout-label">Warning · Two reports in one</span>
+    Read the power grid demand analysis as useful infrastructure data. Read the intelligence explosion framing as promotional narrative. They are bundled together but should be evaluated separately.
+  </aside>
+  <div class="sources"><strong>Sources:</strong> Morgan Stanley research report (March 2026), independent power grid analysis cross-check</div>
+</article>
+
+<section class="watchlist" id="watch">
+  <h2>Watch List · Next Edition Pipeline</h2>
+  <table class="watch">
+    <thead>
+      <tr><th>Topic</th><th>Status</th><th>Priority</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Anthropic Pentagon lawsuit — court hearing &amp; DoD response</td>
+        <td class="status">● Active</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>ByteDance Malaysia routing — Commerce Department response</td>
+        <td class="status">● Active</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>Vera Rubin — customer delivery confirmation</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="HIGH">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>Meta Llama 4 — release timeline</td>
+        <td class="status">◐ Watch</td>
+        <td><span class="priority" data-level="MEDIUM">MEDIUM</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+</div>
+
+<nav class="edition-nav bottom" aria-label="Edition navigation">
+  <a class="nav-btn" href="AI-Signal-Edition-001-2026-03-13.html">◄ Edition 001</a>
+  <a class="nav-btn nav-current" href="./">Current edition</a>
+  <a class="nav-btn" href="AI-Signal-Edition-003-2026-04-10.html">Edition 003 ►</a>
+</nav>
+
+<footer class="colophon">
+  <div>AI Signal · Edition 002 · March 27, 2026</div>
+  <div>Content-equivalent companion to the canonical markdown edition <a href="AI-Signal-Edition-002-2026-03-27.md">AI-Signal-Edition-002-2026-03-27.md</a> — same five stories, same ratings, same callouts, same pipeline; long-form magazine rendering.</div>
+  <div>Build · <a href="https://github.com/DCMikes/ai-newsletter-build">DCMikes/ai-newsletter-build</a> · Publish · <a href="https://github.com/DCMikes/ai-newsletter-publish">DCMikes/ai-newsletter-publish</a></div>
+</footer>
+
+</div>
+</body>
+</html>
