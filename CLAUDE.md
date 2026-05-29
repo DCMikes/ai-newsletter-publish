@@ -8,8 +8,10 @@ The companion **build** repo ([DCMikes/ai-newsletter-build](https://github.com/D
 
 ## Layout
 
-- `index.md` / `README.md` — landing page (rendered by GitHub Pages)
-- Newsletter issues live at the top level or under an `issues/` directory once we settle on a structure
+- `index.html` — perpetual "current edition" link; forwards the Pages root to the newest edition (update on each publish — see build PROCESS.md §6.1)
+- `README.md` — public archive index (full editions table)
+- `AI-Signal-Edition-{NNN}-{YYYY-MM-DD}.md` / `.html` — editions at the top level, each in both formats (same content; HTML is the dark-themed long-form rendering)
+- `favicon.svg`, `favicon-16.png`, `favicon-32.png`, `favicon.ico`, `apple-touch-icon.png` — site icon (the AI Signal broadcast-arc mark; regenerated from the build repo's `tools/make_favicon.py`)
 
 ## GitHub Pages
 
